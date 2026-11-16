@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA EVA Biotelemetry HUD - ALERTS & Diagnosis</title>
+  
+  <!-- =======================================================================
+       GOOGLE FONTS (Sci-Fi & Cyber Typography)
+       - Chakra Petch: Exact futuristic squared HUD font
+       - Orbitron: Iconic NASA display font
+       - Rajdhani: Clean condensed aerospace typography
+       - Share Tech Mono: Telemetry data readouts
+       ======================================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="alerts.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       [SECTION 1]: BACKGROUND & STARFIELD CANVAS
+       ======================================================================= -->
+  <div class="space-background" id="section-background">
+    <canvas id="starfield"></canvas>
+    <div class="space-vignette"></div>
+  </div>
+
+  <!-- =======================================================================
+       MAIN HUD CONTAINER
+       ======================================================================= -->
+  <main class="hud-container">
+
+    <!-- =====================================================================
+         [SECTION 2]: TOP HEADER - ASTRONAUT PROFILE (LEFT) & NASA LOGO (RIGHT)
+         ===================================================================== -->
+    <header class="hud-header" id="section-header">
+      
+      <!-- Top Left: Crew Profile Badge -->
+      <div class="crew-badge" id="crew-profile">
+        <div class="avatar-frame">
+          <svg class="reticle-ring" viewBox="0 0 100 100">
+            <circle class="ring-track" cx="50" cy="50" r="46" />
+            <circle class="ring-glow" cx="50" cy="50" r="46" />
+            <circle class="ring-dashes" cx="50" cy="50" r="46" />
+            <circle class="ring-ticks" cx="50" cy="50" r="46" />
+          </svg>
+          
+          <div class="avatar-photo">
+            <img id="profile-image" src="Health app (4).png" alt="Hiba - Mission Specialist" onerror="this.onerror=null; this.src='Health app (4).png'">
+          </div>
+        </div>
+
+        <div class="crew-info">
+          <h1 class="crew-name" id="crew-name">Hiba</h1>
+          <span class="crew-role" id="crew-role">MISSION SPECIALIST</span>
+          <span class="crew-mission" id="crew-mission">AESS EXPEDITION 74</span>
+        </div>
+      </div>
+
+      <!-- Top Right: NASA Official Worm Logo -->
+      <div class="nasa-branding" id="nasa-logo">
+        <svg class="nasa-logo-svg" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+          <g class="nasa-worm-strokes" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- N -->
+            <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+            <!-- A -->
+            <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+            <!-- S -->
+            <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+            <!-- A -->
+            <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+          </g>
+        </svg>
+      </div>
+
+    </header>
+
+    <!-- =====================================================================
+         MAIN ALERTS STAGE: (LEFT ALERTS GRID) - (CIRCLES) - (DIAGNOSIS & SYMPTOMS)
+         ===================================================================== -->
+    <div class="alerts-stage" id="alertsStage">
+
+      <!-- ===================================================================
+           [SECTION 3]: LEFT PANEL - ALERTS CATEGORIES GRID (8 CARDS)
+           =================================================================== -->
+      <aside class="alerts-left-panel" id="section-alerts-left">
+        
+        <div class="cyber-frame alerts-frame">
+          
+          <!-- Corner Chamfered Brackets -->
+          <span class="corner-bracket top-left"></span>
+          <span class="corner-bracket top-right"></span>
+          <span class="corner-bracket bottom-left"></span>
+          <span class="corner-bracket bottom-right"></span>
+
+          <!-- Left Edge Cyber Notches & 3 Dots -->
+          <div class="frame-edge-deco edge-left">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Right Edge Cyber Notches & 3 Dots -->
+          <div class="frame-edge-deco edge-right">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Header: Alerts -->
+          <div class="alerts-header">
+            <h2 class="alerts-title">Alerts</h2>
+          </div>
+
+          <!-- 2x4 Grid of 8 Alert Cards -->
+          <div class="alerts-grid" id="alertsGrid">
+            
+            <!-- Row 1: Col 1 - Radiation Exposure (CRITICAL - Active by default) -->
+            <div class="alert-card card-critical active" data-alert="radiation" tabindex="0">
+              <span class="alert-card-title">Radiation Exposure</span>
+              <span class="alert-status-badge badge-critical">CRITICAL</span>
+              <span class="alert-card-score">SCORE: 3</span>
+            </div>
+
+            <!-- Row 1: Col 2 - Bone loss & Kidney-Stone Risk (URGENT) -->
+            <div class="alert-card card-urgent" data-alert="bone-renal" tabindex="0">
+              <span class="alert-card-title">Bone loss & Kidney-Stone Risk</span>
+              <span class="alert-status-badge badge-urgent">URGENT</span>
+              <span class="alert-card-score">SCORE: 2</span>
+            </div>
+
+            <!-- Row 2: Col 1 - Metabolism & Hydration (URGENT) -->
+            <div class="alert-card card-urgent" data-alert="metabolism" tabindex="0">
+              <span class="alert-card-title">Metabolism & Hydration</span>
+              <span class="alert-status-badge badge-urgent">URGENT</span>
+              <span class="alert-card-score">SCORE: 2</span>
+            </div>
+
+            <!-- Row 2: Col 2 - Nutrient deficiency (URGENT) -->
+            <div class="alert-card card-urgent" data-alert="nutrient" tabindex="0">
+              <span class="alert-card-title">Nutrient deficiency</span>
+              <span class="alert-status-badge badge-urgent">URGENT</span>
+              <span class="alert-card-score">SCORE: 2</span>
+            </div>
+
+            <!-- Row 3: Col 1 - Eye & Vision Chnages (sans) (URGENT) -->
+            <div class="alert-card card-urgent" data-alert="sans" tabindex="0">
+              <span class="alert-card-title">Eye & Vision Chnages (sans)</span>
+              <span class="alert-status-badge badge-urgent">URGENT</span>
+              <span class="alert-card-score">SCORE: 4</span>
+            </div>
+
+            <!-- Row 3: Col 2 - Heart, Stress & fatigue (ALL NORMAL) -->
+            <div class="alert-card card-normal" data-alert="heart-stress" tabindex="0">
+              <span class="alert-card-title">Heart, Stress & fatigue</span>
+              <span class="alert-status-badge badge-normal">ALL NORMAL</span>
+              <span class="alert-card-score">SCORE: 0</span>
+            </div>
+
+            <!-- Row 4: Col 1 - Inflamation / Infection (ALL NORMAL) -->
+            <div class="alert-card card-normal" data-alert="infection" tabindex="0">
+              <span class="alert-card-title">Inflamation / Infection</span>
+              <span class="alert-status-badge badge-normal">ALL NORMAL</span>
+              <span class="alert-card-score">SCORE: 0</span>
+            </div>
+
+            <!-- Row 4: Col 2 - Neck Vain Clot Risk (ALL NORMAL) -->
+            <div class="alert-card card-normal" data-alert="neck-vein" tabindex="0">
+              <span class="alert-card-title">Neck Vain Clot Risk</span>
+              <span class="alert-status-badge badge-normal">ALL NORMAL</span>
+              <span class="alert-card-score">SCORE: 0</span>
+            </div>
+
+          </div>
+
+          <!-- Bottom Decorative Flange -->
+          <div class="frame-bottom-flange">
+            <span class="flange-line"></span>
+            <span class="flange-notch"></span>
+            <span class="flange-line"></span>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- ===================================================================
+           [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+           NOTICE: CIRCLE 3 IS ACTIVE & DARKER (This is the ALERTS page!)
+           =================================================================== -->
+      <nav class="dials-column" id="dials-column" aria-label="Page Navigation Circles">
+        
+        <!-- CIRCLE 1: Physiological Vitals -->
+        <a href="nasa.html" class="holo-dial dial-1" id="dial-1" title="Physiological Vitals">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">Physiological Vitals</span>
+        </a>
+
+        <!-- CIRCLE 2: STATS -->
+        <a href="profile.html" class="holo-dial dial-2" id="dial-2" title="STATS">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-ticks" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">STATS</span>
+        </a>
+
+        <!-- CIRCLE 3: ALERTS (ACTIVE & DARKER ON THIS PAGE!) -->
+        <a href="#" class="holo-dial dial-3 active" id="dial-3" title="ALERTS (Current Page - Darker)">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed reverse" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">ALERTS (Current)</span>
+        </a>
+
+        <!-- CIRCLE 4: History log and calendar -->
+        <a href="calander.html" class="holo-dial dial-4" id="dial-4" title="History Log and Calendar">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">History & Calendar</span>
+        </a>
+
+      </nav>
+
+      <!-- ===================================================================
+           [SECTION 5]: RIGHT MAIN PANEL - DIAGNOSIS & SYMPTOMS SPLIT VIEW
+           =================================================================== -->
+      <section class="alerts-main-container" id="alertsMainContainer">
+        
+        <div class="alerts-cyber-frame">
+          
+          <!-- Stepped Top-Left & Bottom-Right Decos -->
+          <div class="frame-corner-deco top-left">
+            <span class="deco-bracket"></span>
+            <span class="deco-tab"></span>
+          </div>
+
+          <div class="frame-corner-deco bottom-right">
+            <div class="corner-slashes">
+              <span class="slash"></span>
+              <span class="slash"></span>
+              <span class="slash"></span>
+            </div>
+            <span class="deco-bracket double"></span>
+          </div>
+
+          <!-- Content Split: DIAGNOSIS (Left) vs SYMPTOMS (Right) -->
+          <div class="diagnosis-symptoms-layout">
+            
+            <!-- SUB-COLUMN 1: DIAGNOSIS -->
+            <div class="diag-column" id="diagColumn">
+              
+              <!-- Header -->
+              <div class="column-header">
+                <h3 class="col-title">DIAGNOSIS</h3>
+                <div class="header-divider line-red">
+                  <span class="line-node node-left"></span>
+                  <span class="line-bar"></span>
+                  <span class="line-node node-right"></span>
+                </div>
+              </div>
+
+              <!-- DIAGNOSIS CONTENT BODY -->
+              <div class="diag-content-body">
+                
+                <!-- 1. Critical Diagnosis Section -->
+                <div class="diag-block block-critical" id="diagBlockCritical">
+                  <div class="bus-node-marker marker-red top"></div>
+                  
+                  <div class="diag-badge-row">
+                    <span class="status-badge badge-critical">CRITICAL</span>
+                    <!-- Hazard Warning Triangle -->
+                    <span class="hazard-icon red">&#x26A0;</span>
+                  </div>
+
+                  <div class="diag-detail-text">
+                    <strong class="diag-code">ACUTE_RADIATION_SYNDROME:</strong>
+                    <span class="diag-desc">score 2(1 critical, 0 urgent, 0 spike.</span>
+                  </div>
+
+                  <div class="bus-node-marker marker-red bottom"></div>
+                </div>
+
+                <!-- 2. Urgent Diagnoses Section -->
+                <div class="diag-block block-urgent" id="diagBlockUrgent">
+                  
+                  <div class="sub-divider line-yellow">
+                    <span class="line-node node-left"></span>
+                    <span class="line-bar"></span>
+                    <span class="line-node node-right"></span>
+                  </div>
+
+                  <div class="diag-badge-row">
+                    <span class="status-badge badge-urgent">URGENT</span>
+                  </div>
+
+                  <!-- List of Urgent Diagnoses -->
+                  <div class="urgent-diag-list">
+                    
+                    <div class="urgent-item">
+                      <strong class="item-name">Heart, Stress & fatigue:</strong>
+                      <span class="item-data">AUTAUNOMIC_STRESS_CARDIO: score 2 (0 critical, 2 urgent, 0 spike)</span>
+                    </div>
+
+                    <div class="urgent-item">
+                      <strong class="item-name">Bone loss & Kidney-Stone Risk:</strong>
+                      <span class="item-data">BONE_RENAL_DECONDITIONING: score 2 (0 critical, 2 urgent, 0 spike)</span>
+                    </div>
+
+                    <div class="urgent-item">
+                      <strong class="item-name">Metabolism & Hydration:</strong>
+                      <span class="item-data">METABOLIC_Hydration: score 2 (0 critical, 2 urgent, 0 spike)</span>
+                    </div>
+
+                    <div class="urgent-item">
+                      <strong class="item-name">Eye & Vision Chnages (sans):</strong>
+                      <span class="item-data">SANS_OCULAR_RISK: score 4 (0 critical, 4 urgent, 0 spike)</span>
+                    </div>
+
+                    <div class="urgent-item">
+                      <strong class="item-name">Nutrient deficiency:</strong>
+                      <span class="item-data">NUTRITION_DEFICIENCY: score 2 (0 critical, 2 urgent, 0 spike)</span>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Vertical Separator Bus Line -->
+            <div class="vertical-panel-divider" aria-hidden="true">
+              <span class="v-line-top-bracket"></span>
+              <span class="v-line-bar"></span>
+              <span class="v-line-bottom-bracket"></span>
+            </div>
+
+            <!-- SUB-COLUMN 2: SYMPTOMS -->
+            <div class="symptoms-column" id="symptomsColumn">
+              
+              <!-- Header -->
+              <div class="column-header">
+                <h3 class="col-title">SYMPTOMS</h3>
+                <div class="header-divider line-red">
+                  <span class="line-node node-left"></span>
+                  <span class="line-bar"></span>
+                  <span class="line-node node-right"></span>
+                </div>
+              </div>
+
+              <!-- SYMPTOMS CONTENT BODY -->
+              <div class="symptoms-content-body">
+                
+                <!-- 1. Critical Symptoms Section (Radiation) -->
+                <div class="symptom-section section-critical" id="symptomsCritical">
+                  <div class="symptom-item-row item-critical">
+                    <span class="bus-node-marker marker-red"></span>
+                    <span class="connector-bus-line line-red"></span>
+                    <p class="symptom-text red-highlight">
+                      <strong>Absorbed_dose_msv = 700.00 mSv</strong> is outside the normal range
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 2. Urgent Symptoms Section (Yellow Bus Line) -->
+                <div class="symptom-section section-urgent" id="symptomsUrgent">
+                  
+                  <div class="sub-divider line-yellow">
+                    <span class="line-node node-left"></span>
+                    <span class="line-bar"></span>
+                    <span class="line-node node-right"></span>
+                  </div>
+
+                  <!-- Yellow Symptoms Stack with Connecting Bus Line -->
+                  <div class="urgent-symptoms-stack">
+                    
+                    <!-- Symptom 1 -->
+                    <div class="symptom-item-row item-urgent">
+                      <span class="bus-node-marker marker-yellow"></span>
+                      <p class="symptom-text">
+                        <strong>Body_Weight = 71.16 kg</strong> is outside the normal range [73.5,76.5]
+                      </p>
+                    </div>
+
+                    <!-- Symptom 2 -->
+                    <div class="symptom-item-row item-urgent">
+                      <span class="bus-node-marker marker-yellow"></span>
+                      <p class="symptom-text">
+                        <strong>Calf_circumference = 34.79 cm</strong> is outside the normal range [35,38]
+                      </p>
+                    </div>
+
+                    <!-- Symptom 3 -->
+                    <div class="symptom-item-row item-urgent">
+                      <span class="bus-node-marker marker-yellow"></span>
+                      <p class="symptom-text">
+                        <strong>Calories_kcal = 2344.30 kcal</strong> is outside the normal range [2600,3200]
+                      </p>
+                    </div>
+
+                    <!-- Symptom 4 -->
+                    <div class="symptom-item-row item-urgent">
+                      <span class="bus-node-marker marker-yellow"></span>
+                      <p class="symptom-text">
+                        <strong>Ctx_p1np_Ratio = 1.55 x base</strong> is outside the normal range [0.5,1.5]
+                      </p>
+                    </div>
+
+                    <!-- Symptom 5 -->
+                    <div class="symptom-item-row item-urgent">
+                      <span class="bus-node-marker marker-yellow"></span>
+                      <p class="symptom-text">
+                        <strong>Ijv_flow = 1.00</strong> is outside the normal range [0,0]
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Telemetry Toast -->
+  <div class="vitals-toast" id="vitals-toast" aria-hidden="true">
+    <span class="toast-indicator"></span>
+    <div class="toast-info">
+      <strong class="toast-title" id="toast-title">Alert Item</strong>
+      <span class="toast-val" id="toast-val">Status info</span>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="alerts.js"></script>
+</body>
+</html>

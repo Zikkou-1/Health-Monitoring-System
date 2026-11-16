@@ -1,0 +1,400 @@
+:root {
+       color-scheme: dark;
+       --bg: #0b1220;
+       --panel: #111a2e;
+       --line: #243049;
+       --text: #e5e7eb;
+       --muted: #94a3b8;
+}
+
+* {
+       box-sizing: border-box;
+}
+
+body {
+       margin: 0;
+       background: var(--bg);
+       color: var(--text);
+       font: 14px/1.45 system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+h1 {
+       font-size: 20px;
+       margin: 0;
+}
+
+h2 {
+       font-size: 15px;
+       margin: 0 0 10px;
+}
+
+h3 {
+       margin: 6px 0;
+}
+
+h4 {
+       margin: 12px 0 6px;
+}
+
+.muted {
+       color: var(--muted);
+       font-weight: 400;
+}
+
+code {
+       background: #1e293b;
+       padding: 1px 5px;
+       border-radius: 4px;
+}
+
+button {
+       background: #1e293b;
+       color: var(--text);
+       border: 1px solid var(--line);
+       border-radius: 6px;
+       padding: 5px 10px;
+       cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+       border-color: #38bdf8;
+}
+
+button:disabled {
+       opacity: .5;
+       cursor: default;
+}
+
+input,
+select {
+       background: #0f172a;
+       color: var(--text);
+       border: 1px solid var(--line);
+       border-radius: 6px;
+       padding: 4px 6px;
+}
+
+input[type=number] {
+       width: 64px;
+}
+
+.app {
+       display: grid;
+       gap: 12px;
+       padding: 12px;
+       grid-template-columns: 300px minmax(0, 1fr) 360px;
+       grid-template-areas: "header header header" "banner banner banner" "body live feed" "daily daily daily";
+}
+
+header {
+       grid-area: header;
+       display: flex;
+       gap: 20px;
+       align-items: center;
+       justify-content: space-between;
+       flex-wrap: wrap;
+}
+
+.banner {
+       grid-area: banner;
+       background: #7f1d1d;
+       padding: 8px 12px;
+       border-radius: 8px;
+}
+
+.panel {
+       background: var(--panel);
+       border: 1px solid var(--line);
+       border-radius: 12px;
+       padding: 12px;
+       min-width: 0;
+}
+
+.body {
+       grid-area: body;
+}
+
+.live {
+       grid-area: live;
+}
+
+.feed-panel {
+       grid-area: feed;
+       max-height: 760px;
+       overflow: auto;
+}
+
+.daily {
+       grid-area: daily;
+}
+
+@media (max-width:1100px) {
+       .app {
+              grid-template-columns: 1fr;
+              grid-template-areas: "header" "banner" "body" "live" "feed" "daily";
+       }
+}
+
+.controls {
+       display: flex;
+       gap: 10px;
+       align-items: center;
+       flex-wrap: wrap;
+}
+
+.controls form {
+       display: flex;
+       gap: 4px;
+}
+
+.controls label {
+       display: flex;
+       gap: 6px;
+       align-items: center;
+       color: var(--muted);
+}
+
+.progress {
+       width: 140px;
+       height: 6px;
+       background: #1e293b;
+       border-radius: 3px;
+       overflow: hidden;
+}
+
+.progress div {
+       height: 100%;
+       background: #38bdf8;
+}
+
+.bodymap svg {
+       width: 100%;
+       max-height: 380px;
+}
+
+.region {
+       cursor: pointer;
+       transition: fill-opacity .2s;
+}
+
+.region:hover {
+       fill-opacity: .85;
+}
+
+.pulse {
+       animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+       50% {
+              fill-opacity: .95;
+       }
+}
+
+.chips,
+.picker {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 6px;
+       margin: 8px 0;
+}
+
+.chip {
+       border-radius: 999px;
+       font-size: 12px;
+       padding: 3px 10px;
+}
+
+.chip-on {
+       background: #0c4a6e;
+       border-color: #38bdf8;
+}
+
+.legend {
+       display: flex;
+       gap: 12px;
+       color: var(--muted);
+       font-size: 12px;
+}
+
+.legend i {
+       display: inline-block;
+       width: 10px;
+       height: 10px;
+       border-radius: 50%;
+       margin-right: 4px;
+}
+
+.charts {
+       display: grid;
+       gap: 10px;
+       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.card {
+       background: #0f172a;
+       border: 1px solid var(--line);
+       border-radius: 10px;
+       padding: 8px;
+       margin-top: 10px;
+}
+
+.charts .card {
+       margin-top: 0;
+}
+
+.chart-head {
+       display: flex;
+       justify-content: space-between;
+}
+
+.pill {
+       display: inline-block;
+       color: #0b1220;
+       font-weight: 600;
+       font-size: 11px;
+       border-radius: 999px;
+       padding: 1px 8px;
+}
+
+.tabs {
+       display: flex;
+       gap: 6px;
+       margin-bottom: 8px;
+}
+
+.tab.on {
+       background: #0c4a6e;
+       border-color: #38bdf8;
+}
+
+.feed {
+       list-style: none;
+       padding: 0;
+       margin: 0;
+}
+
+.feed li {
+       border-bottom: 1px solid var(--line);
+       padding: 8px 0;
+}
+
+.feed .day {
+       color: var(--muted);
+       margin-left: 6px;
+       font-size: 12px;
+}
+
+.symptoms {
+       list-style: none;
+       padding: 0;
+}
+
+.symptoms li {
+       display: flex;
+       gap: 8px;
+       align-items: center;
+}
+
+.symptoms i {
+       width: 9px;
+       height: 9px;
+       border-radius: 50%;
+}
+
+.symptoms b {
+       margin-left: auto;
+}
+
+.forecast {
+       background: #422006;
+       border: 1px solid #eab308;
+       border-radius: 8px;
+       padding: 6px 8px;
+}
+
+.disclaimer {
+       color: var(--muted);
+       font-size: 12px;
+       border-top: 1px solid var(--line);
+       padding-top: 6px;
+}
+
+.row-between {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       gap: 10px;
+}
+
+.link {
+       background: none;
+       border: none;
+       color: #38bdf8;
+}
+
+.timeline {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 3px;
+       margin: 8px 0 12px;
+}
+
+.tl {
+       width: 14px;
+       height: 22px;
+       padding: 0;
+       border-radius: 3px;
+       border: 2px solid transparent;
+       opacity: .85;
+}
+
+.tl-on {
+       border-color: #fff;
+       opacity: 1;
+}
+
+.tl-open {
+       opacity: .45;
+}
+
+.cond-grid {
+       display: grid;
+       gap: 8px;
+       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.cond {
+       display: flex;
+       flex-direction: column;
+       text-align: left;
+       gap: 2px;
+       border-width: 2px;
+       padding: 8px;
+}
+
+table {
+       width: 100%;
+       border-collapse: collapse;
+}
+
+th,
+td {
+       text-align: left;
+       padding: 5px 8px;
+       border-bottom: 1px solid var(--line);
+}
+
+th {
+       color: var(--muted);
+       font-weight: 500;
+}
+
+tbody tr {
+       cursor: pointer;
+}
+
+tbody tr:hover,
+tr.sel {
+       background: #16233b;
+}

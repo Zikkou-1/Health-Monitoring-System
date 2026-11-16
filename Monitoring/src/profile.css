@@ -1,0 +1,777 @@
+/* ==========================================================================
+   NASA EVA BIOTELEMETRY HUD - STATS & BIOMARKERS TABLE VIEW
+   STYLESHEET (1:1 Match with the NASA STATS Dashboard)
+   ========================================================================== */
+
+:root {
+  /* Cyan Sci-Fi Palette */
+  --hud-cyan: #00e5ff;
+  --hud-cyan-bright: #33eeff;
+  --hud-cyan-dim: #008ba3;
+  --hud-cyan-glow: rgba(0, 229, 255, 0.55);
+  --hud-cyan-faint: rgba(0, 229, 255, 0.12);
+  
+  /* Backgrounds & Glass */
+  --hud-bg-space: #030814;
+  --hud-bg-glass: rgba(2, 20, 36, 0.75);
+  --hud-bg-glass-card: rgba(3, 24, 44, 0.82);
+  --hud-bg-table: rgba(2, 16, 30, 0.82);
+  
+  /* Typography */
+  --font-hud-square: 'Chakra Petch', sans-serif;
+  --font-hud-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-tech-clean: 'Rajdhani', sans-serif;
+  --font-telemetry: 'Share Tech Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hud-bg-space);
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+}
+
+/* ==========================================================================
+   [SECTION 1]: BACKGROUND & ATMOSPHERE
+   ========================================================================== */
+.space-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 75% 40%, rgba(14, 52, 92, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 25% 65%, rgba(6, 32, 64, 0.55) 0%, transparent 70%),
+    url('Health app.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020712;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.space-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(1, 6, 16, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   MAIN HUD LAYOUT WRAPPER
+   ========================================================================== */
+.hud-container {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  padding: 2.2vh 3.2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   [SECTION 2]: TOP HEADER (CREW PROFILE & NASA LOGO)
+   ========================================================================== */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 30;
+}
+
+.crew-badge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-ring {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  animation: rotateCW 30s linear infinite;
+}
+
+.reticle-ring .ring-track { fill: none; stroke: rgba(0, 229, 255, 0.25); stroke-width: 1.2; }
+.reticle-ring .ring-glow { fill: none; stroke: var(--hud-cyan); stroke-width: 2.2; stroke-dasharray: 45 150; filter: drop-shadow(0 0 6px var(--hud-cyan)); }
+.reticle-ring .ring-dashes { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 1.5; stroke-dasharray: 3 9; }
+.reticle-ring .ring-ticks { fill: none; stroke: rgba(0, 229, 255, 0.5); stroke-width: 1.8; stroke-dasharray: 1 15; }
+
+.avatar-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--hud-cyan);
+  box-shadow: 0 0 15px var(--hud-cyan-glow), inset 0 0 8px rgba(0, 229, 255, 0.4);
+  background: #021220;
+}
+
+.avatar-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crew-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crew-name {
+  font-family: var(--font-hud-square);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  line-height: 1.05;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+.crew-role,
+.crew-mission {
+  font-family: var(--font-hud-square);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #c2e2f2;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.nasa-branding {
+  display: flex;
+  align-items: center;
+}
+
+.nasa-logo-svg {
+  width: 155px;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 15px rgba(0, 229, 255, 0.35));
+}
+
+/* ==========================================================================
+   MAIN STATS STAGE LAYOUT
+   ========================================================================== */
+.stats-stage {
+  display: grid;
+  grid-template-columns: 260px 60px 1fr;
+  align-items: center;
+  height: calc(100vh - 110px);
+  position: relative;
+  gap: 16px;
+  z-index: 20;
+}
+
+/* ==========================================================================
+   [SECTION 3]: LEFT PANEL - STATS TITLE & VIEW TOGGLE BUTTONS
+   ========================================================================== */
+.stats-left-panel {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-height: 540px;
+}
+
+.cyber-frame {
+  position: relative;
+  background: var(--hud-bg-glass);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.stats-frame {
+  width: 100%;
+  padding: 30px 18px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 480px;
+  clip-path: polygon(
+    0 16px, 16px 0, 
+    calc(100% - 16px) 0, 100% 16px, 
+    100% calc(100% - 16px), calc(100% - 16px) 100%, 
+    16px 100%, 0 calc(100% - 16px)
+  );
+}
+
+/* Chamfered Corners */
+.corner-bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+.corner-bracket.top-left { top: -2px; left: -2px; border-top: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.top-right { top: -2px; right: -2px; border-top: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-left { bottom: -2px; left: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-right { bottom: -2px; right: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+
+/* Left & Right Edge Cyber Notches & 3 Dots */
+.frame-edge-deco {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+  pointer-events: none;
+}
+.frame-edge-deco.edge-left { left: -6px; }
+.frame-edge-deco.edge-right { right: -6px; }
+
+.frame-edge-deco .deco-tab {
+  width: 5px; height: 12px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.frame-edge-deco .deco-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frame-edge-deco .deco-dots .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 5px var(--hud-cyan-bright);
+}
+
+/* Header STATS */
+.stats-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.stats-title {
+  font-family: var(--font-hud-square);
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 12px var(--hud-cyan-glow), 0 0 25px rgba(0, 229, 255, 0.4);
+}
+
+/* Buttons (Table View & Graphic view) */
+.stats-view-switchers {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.view-btn {
+  width: 100%;
+  height: 52px;
+  background: rgba(3, 26, 48, 0.7);
+  border: 1.8px solid var(--hud-cyan);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.view-btn .btn-text {
+  font-family: var(--font-hud-square);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+}
+
+/* Active Button (Table View in Image) */
+.view-btn.active {
+  background: linear-gradient(90deg, #094768 0%, #0d638d 50%, #1178ab 100%);
+  border: 2px solid var(--hud-cyan-bright);
+  box-shadow: 0 0 18px var(--hud-cyan-glow), inset 0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+.view-btn:not(.active):hover {
+  background: rgba(0, 229, 255, 0.16);
+  border-color: var(--hud-cyan-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+}
+
+.frame-bottom-flange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 36px;
+  opacity: 0.75;
+}
+.flange-line { flex: 1; height: 1.5px; background: var(--hud-cyan); }
+.flange-notch { width: 14px; height: 4px; background: var(--hud-cyan); transform: skewX(-35deg); }
+
+/* ==========================================================================
+   [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+   NOTICE: CIRCLE 2 IS ACTIVE & DARKER (STATS PAGE)
+   ========================================================================== */
+.dials-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px;
+  z-index: 15;
+  width: 52px;
+  margin: 0 auto;
+}
+
+.holo-dial {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+/* INACTIVE CIRCLES: Glowing, bright, transparent cyan */
+.holo-dial:not(.active) {
+  background: transparent;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+}
+
+.holo-dial:not(.active):hover {
+  transform: scale(1.16);
+  filter: drop-shadow(0 0 12px var(--hud-cyan-bright)) brightness(1.25);
+}
+
+/* ACTIVE CIRCLE: (CIRCLE 2 STATS IS VISIBLY DARKER THAN THE OTHERS!) */
+.holo-dial.active {
+  background: radial-gradient(circle at center, #01060e 50%, #031422 100%);
+  border: 1.8px solid #004d5c;
+  box-shadow: 
+    inset 0 0 16px rgba(0, 0, 0, 0.95),
+    inset 0 0 6px #010810,
+    0 0 8px rgba(0, 160, 200, 0.25);
+  transform: scale(0.96);
+  filter: brightness(0.62) contrast(1.15);
+}
+
+.holo-dial.active .ring-outer-dashed { stroke: #005060; stroke-width: 1.4; }
+.holo-dial.active .ring-middle-arc { stroke: #006b80; stroke-width: 1.8; filter: none; }
+.holo-dial.active .ring-inner-ticks { stroke: #003e4d; }
+.holo-dial.active .ring-core-glow { fill: #01050a; stroke: #003542; }
+.holo-dial.active .dial-crosshair { stroke: #004552; }
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ring-outer-dashed { fill: none; stroke: var(--hud-cyan); stroke-width: 1.6; stroke-dasharray: 14 7 4 7; animation: rotateCW 12s linear infinite; transform-origin: center; }
+.ring-outer-dashed.reverse { animation: rotateCCW 10s linear infinite; }
+.ring-middle-arc { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 2.2; stroke-dasharray: 45 70; animation: rotateCCW 8s linear infinite; transform-origin: center; }
+.ring-middle-arc.reverse { animation: rotateCW 9s linear infinite; }
+.ring-inner-dashed { fill: none; stroke: rgba(0, 229, 255, 0.7); stroke-width: 1.5; stroke-dasharray: 6 6; animation: rotateCW 6s linear infinite; transform-origin: center; }
+.ring-inner-ticks { fill: none; stroke: var(--hud-cyan); stroke-width: 1.8; stroke-dasharray: 2 6; }
+.ring-core-glow { fill: rgba(0, 229, 255, 0.4); stroke: var(--hud-cyan-bright); stroke-width: 1.5; }
+.dial-crosshair { stroke: var(--hud-cyan); stroke-width: 1.5; stroke-linecap: round; }
+
+.dial-tooltip {
+  position: absolute;
+  left: 58px;
+  background: rgba(2, 20, 36, 0.95);
+  border: 1px solid var(--hud-cyan);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-hud-square);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+
+.holo-dial:hover .dial-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   [SECTION 5]: MAIN BIOMARKERS TABLE VIEW (MATCHING THE IMAGE)
+   ========================================================================== */
+.biomarkers-main-container {
+  height: 100%;
+  max-height: 560px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Outer Cyber Frame for Table */
+.biomarkers-cyber-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--hud-bg-table);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28), inset 0 0 20px rgba(0, 229, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px 22px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 3px;
+  clip-path: polygon(
+    0 14px, 14px 0, 
+    calc(100% - 14px) 0, 100% 14px, 
+    100% calc(100% - 24px), calc(100% - 24px) 100%, 
+    14px 100%, 0 calc(100% - 14px)
+  );
+}
+
+/* Stepped Top-Left and Bottom-Right Deco */
+.table-corner-deco {
+  position: absolute;
+  pointer-events: none;
+}
+
+.table-corner-deco.top-left {
+  top: -2px;
+  left: -2px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.table-corner-deco.top-left .deco-bracket {
+  width: 24px;
+  height: 24px;
+  border-top: 3.5px solid var(--hud-cyan-bright);
+  border-left: 3.5px solid var(--hud-cyan-bright);
+}
+
+.table-corner-deco.bottom-right {
+  bottom: 0px;
+  right: -2px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.table-corner-deco.bottom-right .corner-slashes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.table-corner-deco.bottom-right .slash {
+  width: 12px;
+  height: 3px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 4px var(--hud-cyan);
+  transform: skewX(-35deg);
+}
+
+.table-corner-deco.bottom-right .deco-bracket.double {
+  width: 28px;
+  height: 28px;
+  border-bottom: 3.5px solid var(--hud-cyan-bright);
+  border-right: 3.5px solid var(--hud-cyan-bright);
+}
+
+/* Biomarkers Table */
+.biomarkers-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+/* Table Header */
+.table-header-row th {
+  font-family: var(--font-hud-square);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
+  padding: 8px 10px 12px 10px;
+  border-bottom: 2px solid var(--hud-cyan);
+  box-shadow: 0 2px 8px rgba(0, 229, 255, 0.3);
+}
+
+.col-biomarker { width: 34%; }
+.col-daily     { width: 22%; text-align: center; }
+.col-normal    { width: 24%; text-align: center; }
+.col-trends    { width: 20%; text-align: right; }
+
+/* Table Data Rows */
+.table-data-row {
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.table-data-row td {
+  padding: 5.5px 10px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.35);
+  color: #ffffff;
+  position: relative;
+}
+
+.table-data-row:hover {
+  background: rgba(0, 229, 255, 0.14);
+}
+
+.table-data-row:hover td {
+  color: #ffffff;
+  text-shadow: 0 0 6px var(--hud-cyan);
+}
+
+/* Biomarker Name Column */
+.table-data-row .col-biomarker {
+  font-family: var(--font-hud-square);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Values Columns */
+.table-data-row .col-daily,
+.table-data-row .col-normal {
+  font-family: var(--font-telemetry);
+  font-weight: 600;
+  font-size: 0.96rem;
+  color: #e4f5fc;
+}
+
+/* Trend Styles */
+.col-trends {
+  font-family: var(--font-hud-square);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.trend-worsening {
+  color: #ffffff;
+}
+
+.trend-improving {
+  color: #ffffff;
+}
+
+.trend-stable {
+  color: #ffffff;
+}
+
+/* Little Nodes on the left and right of row dividers */
+.node-tick {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 4px var(--hud-cyan);
+}
+
+.node-tick.left {
+  left: 0;
+}
+
+.node-tick.right {
+  right: 0;
+}
+
+/* ==========================================================================
+   ALTERNATE GRAPHIC VIEW (TOGGLED WHEN CLICKING 'GRAPHIC VIEW')
+   ========================================================================== */
+.biomarkers-graphic-frame {
+  width: 100%;
+  height: 100%;
+  background: var(--hud-bg-table);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28);
+  padding: 20px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.graphic-header {
+  border-bottom: 1.5px solid var(--hud-cyan);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.graphic-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.3rem;
+  color: var(--hud-cyan-bright);
+}
+
+.graphic-sub {
+  font-size: 0.82rem;
+  color: #a4dcff;
+}
+
+.chart-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.deviation-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chart-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chart-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+
+.chart-track {
+  height: 10px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.chart-fill {
+  height: 100%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan);
+  transition: width 0.6s ease;
+}
+
+.chart-fill.worsening { background: #f8a000; box-shadow: 0 0 8px #f8a000; }
+.chart-fill.improving { background: #00ffaa; box-shadow: 0 0 8px #00ffaa; }
+
+/* Interactive Toast */
+.vitals-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(2, 24, 44, 0.94);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 20px var(--hud-cyan-glow);
+  padding: 8px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vitals-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan-bright);
+}
+
+.toast-title {
+  display: block;
+  font-size: 0.78rem;
+  color: #7adcf5;
+  text-transform: uppercase;
+}
+
+.toast-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Keyframes */
+@keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+/* Responsive adjustments */
+@media (max-width: 1366px) {
+  .stats-stage {
+    grid-template-columns: 240px 50px 1fr;
+    gap: 12px;
+  }
+  .table-data-row td {
+    padding: 4.5px 8px;
+    font-size: 0.9rem;
+  }
+  .table-header-row th {
+    font-size: 1.05rem;
+    padding: 6px 8px 10px 8px;
+  }
+}
+

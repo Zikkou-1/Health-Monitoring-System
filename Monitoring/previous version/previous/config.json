@@ -1,0 +1,5 @@
+{
+  "spike_k": 5,
+  "spike_window": 7,
+  "ml_threshold": 0.45
+}

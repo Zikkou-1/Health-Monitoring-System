@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA EVA Biotelemetry HUD - STATS & Biomarkers</title>
+  
+  <!-- =======================================================================
+       GOOGLE FONTS (Sci-Fi & Cyber Typography)
+       - Chakra Petch: Exact futuristic squared HUD font
+       - Orbitron: Iconic NASA display font
+       - Rajdhani: Clean condensed aerospace typography
+       - Share Tech Mono: Telemetry data readouts
+       ======================================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="state.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       [SECTION 1]: BACKGROUND & STARFIELD CANVAS
+       ======================================================================= -->
+  <div class="space-background" id="section-background">
+    <canvas id="starfield"></canvas>
+    <div class="space-vignette"></div>
+  </div>
+
+  <!-- =======================================================================
+       MAIN HUD CONTAINER
+       ======================================================================= -->
+  <main class="hud-container">
+
+    <!-- =====================================================================
+         [SECTION 2]: TOP HEADER - ASTRONAUT PROFILE (LEFT) & NASA LOGO (RIGHT)
+         ===================================================================== -->
+    <header class="hud-header" id="section-header">
+      
+      <!-- Top Left: Crew Profile Badge -->
+      <div class="crew-badge" id="crew-profile">
+        <div class="avatar-frame">
+          <svg class="reticle-ring" viewBox="0 0 100 100">
+            <circle class="ring-track" cx="50" cy="50" r="46" />
+            <circle class="ring-glow" cx="50" cy="50" r="46" />
+            <circle class="ring-dashes" cx="50" cy="50" r="46" />
+            <circle class="ring-ticks" cx="50" cy="50" r="46" />
+          </svg>
+          
+          <div class="avatar-photo">
+            <img id="profile-image" src="Health app (4).png" alt="Hiba - Mission Specialist" onerror="this.onerror=null; this.src='Health app (4).png'">
+          </div>
+        </div>
+
+        <div class="crew-info">
+          <h1 class="crew-name" id="crew-name">Hiba</h1>
+          <span class="crew-role" id="crew-role">MISSION SPECIALIST</span>
+          <span class="crew-mission" id="crew-mission">AESS EXPEDITION 74</span>
+        </div>
+      </div>
+
+      <!-- Top Right: NASA Official Worm Logo -->
+      <div class="nasa-branding" id="nasa-logo">
+        <svg class="nasa-logo-svg" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+          <g class="nasa-worm-strokes" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- N -->
+            <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+            <!-- A -->
+            <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+            <!-- S -->
+            <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+            <!-- A -->
+            <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+          </g>
+        </svg>
+      </div>
+
+    </header>
+
+    <!-- =====================================================================
+         MAIN STATS STAGE: (LEFT CONTROLS) - (CIRCLES) - (BIOMARKER TABLE)
+         ===================================================================== -->
+    <div class="stats-stage" id="statsStage">
+
+      <!-- ===================================================================
+           [SECTION 3]: LEFT PANEL - STATS TITLE & VIEW TOGGLE BUTTONS
+           =================================================================== -->
+      <aside class="stats-left-panel" id="section-stats-left">
+        
+        <div class="cyber-frame stats-frame">
+          
+          <!-- Chamfered Corner Brackets -->
+          <span class="corner-bracket top-left"></span>
+          <span class="corner-bracket top-right"></span>
+          <span class="corner-bracket bottom-left"></span>
+          <span class="corner-bracket bottom-right"></span>
+
+          <!-- Left Edge Notches & 3 Cyan Dots -->
+          <div class="frame-edge-deco edge-left">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Right Edge Notches & 3 Cyan Dots -->
+          <div class="frame-edge-deco edge-right">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Title: STATS -->
+          <div class="stats-header">
+            <h2 class="stats-title">STATS</h2>
+          </div>
+
+          <!-- View Switcher Buttons (Table View vs Graphic view) -->
+          <div class="stats-view-switchers">
+            
+            <!-- Button 1: Table View (Active by default) -->
+            <button class="view-btn btn-table active" id="btnTableView" data-view="table" title="View Biomarkers Data Table">
+              <span class="btn-text">Table View</span>
+            </button>
+
+            <!-- Button 2: Graphic view -->
+            <button class="view-btn btn-graphic" id="btnGraphicView" data-view="graphic" title="View Biomarkers Graphic Chart">
+              <span class="btn-text">Graphic view</span>
+            </button>
+
+          </div>
+
+          <!-- Bottom Flange Accents -->
+          <div class="frame-bottom-flange">
+            <span class="flange-line"></span>
+            <span class="flange-notch"></span>
+            <span class="flange-line"></span>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- ===================================================================
+           [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+           Notice: CIRCLE 2 IS ACTIVE & DARKER (This is the STATS page!)
+           =================================================================== -->
+      <nav class="dials-column" id="dials-column" aria-label="Page Navigation Circles">
+        
+        <!-- CIRCLE 1: Physiological Vitals (Links back to main HUD) -->
+        <a href="nasa.html" class="holo-dial dial-1" id="dial-1" title="Physiological Vitals (Main HUD)">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">Physiological Vitals</span>
+        </a>
+
+        <!-- CIRCLE 2: STATS (CURRENT PAGE: ACTIVE & DARKER!) -->
+        <a href="#" class="holo-dial dial-2 active" id="dial-2" title="STATS (Current Page - Darker)">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-ticks" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">STATS (Current)</span>
+        </a>
+
+        <!-- CIRCLE 3: ALERTS -->
+        <a href="alerts.html" class="holo-dial dial-3" id="dial-3" title="ALERTS">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed reverse" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">ALERTS</span>
+        </a>
+
+        <!-- CIRCLE 4: History log and calendar -->
+        <a href="calander.html" class="holo-dial dial-4" id="dial-4" title="History Log and Calendar">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">History & Calendar</span>
+        </a>
+
+      </nav>
+
+      <!-- ===================================================================
+           [SECTION 5]: MAIN TELEMETRY TABLE VIEW (MATCHING THE IMAGE)
+           =================================================================== -->
+      <section class="biomarkers-main-container" id="biomarkersContainer">
+        
+        <!-- Table View Display -->
+        <div class="biomarkers-cyber-frame" id="tableViewWrapper">
+          
+          <!-- Top Left Stepped Bracket Deco -->
+          <div class="table-corner-deco top-left">
+            <span class="deco-bracket"></span>
+            <span class="deco-tab"></span>
+          </div>
+
+          <!-- Bottom Right Stepped Double Bracket & Slashes // -->
+          <div class="table-corner-deco bottom-right">
+            <div class="corner-slashes">
+              <span class="slash"></span>
+              <span class="slash"></span>
+              <span class="slash"></span>
+            </div>
+            <span class="deco-bracket double"></span>
+          </div>
+
+          <!-- Biomarkers Table -->
+          <table class="biomarkers-table" id="biomarkersTable">
+            <thead>
+              <tr class="table-header-row">
+                <th class="col-biomarker">BIOMARKER</th>
+                <th class="col-daily">DAILY VALUE</th>
+                <th class="col-normal">NORMAL RANGES</th>
+                <th class="col-trends">TRENDS</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <!-- Row 1 -->
+              <tr class="table-data-row" data-id="Absorbed_dose_msv">
+                <td class="col-biomarker"><span class="node-tick left"></span>Absorbed_dose_msv</td>
+                <td class="col-daily">699 mSv</td>
+                <td class="col-normal">1 to 400</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 2 -->
+              <tr class="table-data-row" data-id="Lymphocyte_Count">
+                <td class="col-biomarker"><span class="node-tick left"></span>Lymphocyte_Count</td>
+                <td class="col-daily">1388 cells/uL</td>
+                <td class="col-normal">1500 to 3000</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr class="table-data-row" data-id="Ctx_p1np_Ratio">
+                <td class="col-biomarker"><span class="node-tick left"></span>Ctx_p1np_Ratio</td>
+                <td class="col-daily">1.68 x base</td>
+                <td class="col-normal">0.5 to 1.5</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 4 -->
+              <tr class="table-data-row" data-id="T_score">
+                <td class="col-biomarker"><span class="node-tick left"></span>T_score</td>
+                <td class="col-daily">-1.44 SD</td>
+                <td class="col-normal">-1 to 3</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr class="table-data-row" data-id="Urinary_Calcium_mg">
+                <td class="col-biomarker"><span class="node-tick left"></span>Urinary_Calcium_mg</td>
+                <td class="col-daily">307 mg/d</td>
+                <td class="col-normal">0 to 300</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 6 -->
+              <tr class="table-data-row" data-id="Body_Weight">
+                <td class="col-biomarker"><span class="node-tick left"></span>Body_Weight</td>
+                <td class="col-daily">70.81 kg</td>
+                <td class="col-normal">73.5 to 76.5</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 7 -->
+              <tr class="table-data-row" data-id="Calories_kcal">
+                <td class="col-biomarker"><span class="node-tick left"></span>Calories_kcal</td>
+                <td class="col-daily">2118 kcal</td>
+                <td class="col-normal">2600 to 3200</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 8 -->
+              <tr class="table-data-row" data-id="Magnesium_Serum">
+                <td class="col-biomarker"><span class="node-tick left"></span>Magnesium_Serum</td>
+                <td class="col-daily">1.64 mg/dL</td>
+                <td class="col-normal">1.7 to 2.2</td>
+                <td class="col-trends trend-improving">&#x2198; IMPROVING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 9 -->
+              <tr class="table-data-row" data-id="Vitamin_D_Serum">
+                <td class="col-biomarker"><span class="node-tick left"></span>Vitamin_D_Serum</td>
+                <td class="col-daily">21.62 ng/mL</td>
+                <td class="col-normal">30 to 50</td>
+                <td class="col-trends trend-stable">&#x2192; STABLE<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 10 -->
+              <tr class="table-data-row" data-id="Calf_circumference">
+                <td class="col-biomarker"><span class="node-tick left"></span>Calf_circumference</td>
+                <td class="col-daily">34.27 cm</td>
+                <td class="col-normal">35 to 38</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 11 -->
+              <tr class="table-data-row" data-id="Refraction_Shift">
+                <td class="col-biomarker"><span class="node-tick left"></span>Refraction_Shift</td>
+                <td class="col-daily">0.69 D</td>
+                <td class="col-normal">-0.25 to 0.25</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 12 -->
+              <tr class="table-data-row" data-id="TRF_Diffrence">
+                <td class="col-biomarker"><span class="node-tick left"></span>TRF_Diffrence</td>
+                <td class="col-daily">33.71</td>
+                <td class="col-normal">0 to 20.9</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 13 -->
+              <tr class="table-data-row" data-id="Visual_Acuity_Decrement">
+                <td class="col-biomarker"><span class="node-tick left"></span>Visual_Acuity_Decrement</td>
+                <td class="col-daily">1.50 line</td>
+                <td class="col-normal">0 to 0.5</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+              <!-- Row 14 -->
+              <tr class="table-data-row" data-id="IJV_Flow">
+                <td class="col-biomarker"><span class="node-tick left"></span>IJV_Flow</td>
+                <td class="col-daily">1.00 State</td>
+                <td class="col-normal">0 to 0</td>
+                <td class="col-trends trend-worsening">&#x2197; WORSENING<span class="node-tick right"></span></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+        </div>
+
+        <!-- Alternate Graphic View Display (Shown when clicking 'Graphic view') -->
+        <div class="biomarkers-graphic-frame" id="graphicViewWrapper" style="display: none;">
+          <div class="graphic-header">
+            <h3 class="graphic-title">BIOMARKERS DEVIATION & TREND MONITOR</h3>
+            <span class="graphic-sub">Real-Time Expedition 74 Biotelemetry Analytics</span>
+          </div>
+          <div class="chart-container" id="chartContainer">
+            <!-- Interactive telemetry deviation bars -->
+            <div class="deviation-bars" id="deviationBars"></div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Row Detail Toast -->
+  <div class="vitals-toast" id="vitals-toast" aria-hidden="true">
+    <span class="toast-indicator"></span>
+    <div class="toast-info">
+      <strong class="toast-title" id="toast-title">Biomarker</strong>
+      <span class="toast-val" id="toast-val">Value info</span>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="profile.js"></script>
+</body>
+</html>

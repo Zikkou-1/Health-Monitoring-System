@@ -1,0 +1,761 @@
+/* ==========================================================================
+   NASA V.I.T.A.L. - CREW AUTHENTICATION & LOGIN PROCESS
+   STYLESHEET (1:1 Match with the 3 NASA Login Process Screens)
+   ========================================================================== */
+
+:root {
+  /* Cyan Sci-Fi Color Palette */
+  --hud-cyan: #00e5ff;
+  --hud-cyan-bright: #33eeff;
+  --hud-cyan-dim: #008ba3;
+  --hud-cyan-glow: rgba(0, 229, 255, 0.55);
+  --hud-cyan-faint: rgba(0, 229, 255, 0.12);
+  
+  /* Background & Glass Accents */
+  --hud-bg-space: #030814;
+  --hud-bg-glass: rgba(2, 20, 36, 0.78);
+  --hud-bg-card: rgba(2, 16, 30, 0.84);
+  
+  /* Typography */
+  --font-hud-square: 'Chakra Petch', sans-serif;
+  --font-hud-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-tech-clean: 'Rajdhani', sans-serif;
+  --font-telemetry: 'Share Tech Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hud-bg-space);
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+}
+
+/* ==========================================================================
+   [SECTION 1]: BACKGROUND & ATMOSPHERE
+   ========================================================================== */
+.space-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 75% 40%, rgba(14, 52, 92, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 25% 65%, rgba(6, 32, 64, 0.55) 0%, transparent 70%),
+    url('Health app.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020712;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.space-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(1, 6, 16, 0.82) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   MAIN LOGIN VIEWPORT CONTAINER
+   ========================================================================== */
+.login-viewport {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Step Screen Panels */
+.login-step {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4.5vh 5vw 6vh 5vw;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.login-step.step-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* ==========================================================================
+   [STEP 1]: PROFILE SELECTION SCREEN
+   ========================================================================== */
+.step1-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.vital-brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.vital-title {
+  font-family: var(--font-hud-display);
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #ffffff;
+  text-shadow: 0 0 14px rgba(0, 229, 255, 0.55), 0 0 28px rgba(0, 229, 255, 0.25);
+  line-height: 1;
+}
+
+.nasa-logo-svg {
+  width: 160px;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.35));
+}
+
+.nasa-logo-svg.large {
+  width: 200px;
+}
+
+.step1-instructions {
+  font-family: var(--font-hud-square);
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+/* Profiles Horizontal Deck */
+.profiles-deck {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1260px;
+  margin: auto auto;
+  padding: 0 10px;
+}
+
+/* Individual Crew Profile Card */
+.crew-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.crew-card:hover,
+.crew-card:focus-visible {
+  transform: translateY(-8px) scale(1.05);
+}
+
+/* Concentric Reticle Rings Container */
+.avatar-reticle {
+  position: relative;
+  width: 154px;
+  height: 154px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-svg {
+  position: absolute;
+  inset: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  pointer-events: none;
+  animation: rotateCW 35s linear infinite;
+  overflow: visible;
+}
+
+.reticle-svg .ring-track {
+  fill: none;
+  stroke: rgba(0, 229, 255, 0.25);
+  stroke-width: 1.4;
+}
+
+.reticle-svg .ring-glow {
+  fill: none;
+  stroke: var(--hud-cyan);
+  stroke-width: 2.2;
+  stroke-dasharray: 45 150;
+  filter: drop-shadow(0 0 8px var(--hud-cyan));
+}
+
+.reticle-svg .ring-dashes {
+  fill: none;
+  stroke: var(--hud-cyan-bright);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 10;
+}
+
+.reticle-svg .ring-dashes.reverse {
+  animation: rotateCCW 25s linear infinite;
+  transform-origin: center;
+}
+
+.reticle-svg .ring-ticks {
+  fill: none;
+  stroke: rgba(0, 229, 255, 0.5);
+  stroke-width: 2;
+  stroke-dasharray: 1 12;
+}
+
+.crew-card:hover .reticle-svg .ring-glow {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 14px var(--hud-cyan-bright));
+}
+
+/* Avatar Photo Disc */
+.avatar-disc {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--hud-cyan);
+  box-shadow: 0 0 16px var(--hud-cyan-glow), inset 0 0 10px rgba(0, 229, 255, 0.4);
+  background: #021220;
+}
+
+.avatar-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crew-label {
+  margin-top: 18px;
+  font-family: var(--font-hud-square);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.crew-card:hover .crew-label {
+  color: #ffffff;
+  text-shadow: 0 0 14px #00e5ff;
+}
+
+/* ==========================================================================
+   [STEP 2]: SELECTED PROFILE ACTION SCREEN
+   ========================================================================== */
+.step2-header,
+.step3-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.nasa-worm-logo.centered {
+  display: flex;
+  justify-content: center;
+}
+
+/* 3-Column Stage (Left Action - Center Profile - Right Action) */
+.step2-stage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1280px;
+  margin: auto auto;
+  position: relative;
+  padding: 0 20px;
+}
+
+/* Action Wings (Left & Right) */
+.action-wing {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  padding: 18px 24px;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.action-wing:hover {
+  background: rgba(0, 229, 255, 0.08);
+  transform: scale(1.04);
+}
+
+.action-wing .action-text {
+  font-family: var(--font-hud-square);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  white-space: nowrap;
+}
+
+.chevron-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.chevron {
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--hud-cyan);
+  text-shadow: 0 0 12px var(--hud-cyan-bright);
+  line-height: 1;
+  animation: pulseChevron 1.6s ease-in-out infinite;
+}
+
+.chevron.c2 {
+  animation-delay: 0.3s;
+}
+
+@keyframes pulseChevron {
+  0%, 100% { opacity: 0.35; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(4px); }
+}
+
+.chevron-group.left .chevron {
+  animation-direction: reverse;
+}
+
+/* Center Selected Profile */
+.selected-crew-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-reticle.large-reticle {
+  width: 195px;
+  height: 195px;
+}
+
+.avatar-disc.large-disc {
+  width: 160px;
+  height: 160px;
+  border-width: 2.5px;
+}
+
+.selected-crew-name {
+  margin-top: 18px;
+  font-family: var(--font-hud-square);
+  font-size: 1.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+/* Back Navigation Pill */
+.back-pill-btn {
+  align-self: center;
+  background: rgba(3, 20, 36, 0.65);
+  border: 1.5px solid rgba(0, 229, 255, 0.4);
+  color: #8be9fd;
+  font-family: var(--font-hud-square);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: 20px;
+}
+
+.back-pill-btn:hover {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: var(--hud-cyan-bright);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+/* ==========================================================================
+   [STEP 3]: PASSWORD AUTHENTICATION SCREEN
+   ========================================================================== */
+.step3-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 70px;
+  width: 100%;
+  max-width: 1050px;
+  margin: auto auto;
+}
+
+.auth-avatar-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-form-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.auth-greeting {
+  margin-bottom: 24px;
+}
+
+.greeting-name {
+  font-family: var(--font-hud-square);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  line-height: 1.25;
+}
+
+.greeting-prompt {
+  font-family: var(--font-hud-square);
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+  margin-top: 4px;
+}
+
+/* Password Input Group */
+.auth-input-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* Glowing Input Box */
+.input-glow-box {
+  width: 320px;
+  height: 60px;
+  background: rgba(2, 18, 34, 0.7);
+  border: 2px solid #a8cce0;
+  border-radius: 12px;
+  box-shadow: 0 0 16px rgba(168, 204, 224, 0.35), inset 0 0 12px rgba(0, 229, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  transition: all 0.25s ease;
+}
+
+.input-glow-box:focus-within {
+  border-color: var(--hud-cyan-bright);
+  box-shadow: 0 0 22px var(--hud-cyan-glow), inset 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.password-field {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: var(--font-telemetry);
+  font-size: 1.8rem;
+  letter-spacing: 0.25em;
+}
+
+.password-field::placeholder {
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+/* Padlock Button */
+.lock-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(2, 18, 34, 0.7);
+  border: 2px solid #a8cce0;
+  box-shadow: 0 0 16px rgba(168, 204, 224, 0.35), inset 0 0 10px rgba(0, 229, 255, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a8cce0;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.lock-btn:hover {
+  border-color: var(--hud-cyan-bright);
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 22px var(--hud-cyan-glow);
+}
+
+.lock-svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Feedback Status Readout */
+.auth-status-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.status-text {
+  font-family: var(--font-telemetry);
+  font-size: 0.95rem;
+  color: #79c5e8;
+  letter-spacing: 0.05em;
+}
+
+.auth-status-message.success .status-indicator {
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+}
+
+.auth-status-message.success .status-text {
+  color: #00ff88;
+}
+
+.auth-status-message.error .status-indicator {
+  background: #ff3344;
+  box-shadow: 0 0 8px #ff3344;
+}
+
+.auth-status-message.error .status-text {
+  color: #ff3344;
+}
+
+/* ==========================================================================
+   POPUP MODAL: LEAVE A NOTE
+   ========================================================================== */
+.cyber-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 8, 16, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.cyber-modal-overlay.modal-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cyber-modal-card {
+  width: 90%;
+  max-width: 520px;
+  background: rgba(2, 22, 40, 0.94);
+  border: 1.8px solid var(--hud-cyan);
+  border-radius: 6px;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), inset 0 0 20px rgba(0, 229, 255, 0.12);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.4);
+  padding-bottom: 10px;
+}
+
+.modal-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--hud-cyan-bright);
+  letter-spacing: 0.05em;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--hud-cyan);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-sub {
+  font-size: 0.95rem;
+  color: #c2e2f2;
+}
+
+.note-textarea {
+  width: 100%;
+  background: rgba(1, 12, 24, 0.8);
+  border: 1.5px solid rgba(0, 229, 255, 0.5);
+  border-radius: 4px;
+  padding: 12px;
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+  font-size: 1rem;
+  resize: vertical;
+  outline: none;
+}
+
+.note-textarea:focus {
+  border-color: var(--hud-cyan-bright);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-btn {
+  padding: 8px 18px;
+  font-family: var(--font-hud-square);
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.modal-btn.cancel {
+  background: transparent;
+  border: 1.2px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.modal-btn.save {
+  background: linear-gradient(90deg, #094768, #1178ab);
+  border: 1.5px solid var(--hud-cyan-bright);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+.modal-btn.save:hover {
+  background: linear-gradient(90deg, #0d5f8c, #1693d2);
+  box-shadow: 0 0 18px var(--hud-cyan-glow);
+}
+
+/* ==========================================================================
+   TELEMETRY TOAST NOTIFICATION
+   ========================================================================== */
+.vitals-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(2, 24, 44, 0.94);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 20px var(--hud-cyan-glow);
+  padding: 8px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vitals-toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan-bright);
+}
+
+.toast-title {
+  display: block;
+  font-size: 0.78rem;
+  color: #7adcf5;
+  text-transform: uppercase;
+}
+
+.toast-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Keyframes */
+@keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .vital-title { font-size: 2.6rem; }
+  .step1-instructions { font-size: 1.4rem; }
+  .avatar-reticle { width: 130px; height: 130px; }
+  .avatar-disc { width: 105px; height: 105px; }
+  .crew-label { font-size: 1.3rem; }
+  .action-wing .action-text { font-size: 1.35rem; }
+  .step3-stage { gap: 40px; }
+}

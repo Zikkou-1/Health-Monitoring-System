@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA EVA Biotelemetry HUD - Mission Calendar & History Log</title>
+  
+  <!-- =======================================================================
+       GOOGLE FONTS (Sci-Fi & Cyber Typography)
+       - Chakra Petch: Exact futuristic squared HUD font
+       - Orbitron: Iconic NASA display font
+       - Rajdhani: Clean condensed aerospace typography
+       - Share Tech Mono: Telemetry data readouts
+       ======================================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="calander.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       [SECTION 1]: BACKGROUND & STARFIELD CANVAS
+       ======================================================================= -->
+  <div class="space-background" id="section-background">
+    <canvas id="starfield"></canvas>
+    <div class="space-vignette"></div>
+  </div>
+
+  <!-- =======================================================================
+       MAIN HUD CONTAINER
+       ======================================================================= -->
+  <main class="hud-container">
+
+    <!-- =====================================================================
+         [SECTION 2]: TOP HEADER - ASTRONAUT PROFILE (LEFT) & NASA LOGO (RIGHT)
+         ===================================================================== -->
+    <header class="hud-header" id="section-header">
+      
+      <!-- Top Left: Crew Profile Badge -->
+      <div class="crew-badge" id="crew-profile">
+        <div class="avatar-frame">
+          <svg class="reticle-ring" viewBox="0 0 100 100">
+            <circle class="ring-track" cx="50" cy="50" r="46" />
+            <circle class="ring-glow" cx="50" cy="50" r="46" />
+            <circle class="ring-dashes" cx="50" cy="50" r="46" />
+            <circle class="ring-ticks" cx="50" cy="50" r="46" />
+          </svg>
+          
+          <div class="avatar-photo">
+            <img id="profile-image" src="Health app (4).png" alt="Hiba - Mission Specialist" onerror="this.onerror=null; this.src='Health app (4).png'">
+          </div>
+        </div>
+
+        <div class="crew-info">
+          <h1 class="crew-name" id="crew-name">Hiba</h1>
+          <span class="crew-role" id="crew-role">MISSION SPECIALIST</span>
+          <span class="crew-mission" id="crew-mission">AESS EXPEDITION 74</span>
+        </div>
+      </div>
+
+      <!-- Top Center: Week 3 Indicator Badge -->
+      <div class="week-indicator-badge" id="weekBadge">
+        <span class="week-title">Week 3</span>
+      </div>
+
+      <!-- Top Right: NASA Official Worm Logo -->
+      <div class="nasa-branding" id="nasa-logo">
+        <svg class="nasa-logo-svg" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+          <g class="nasa-worm-strokes" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- N -->
+            <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+            <!-- A -->
+            <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+            <!-- S -->
+            <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+            <!-- A -->
+            <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+          </g>
+        </svg>
+      </div>
+
+    </header>
+
+    <!-- =====================================================================
+         MAIN CALENDAR STAGE: (LEFT LOG PANEL) - (CIRCLES) - (CALENDAR GRID)
+         ===================================================================== -->
+    <div class="calendar-stage" id="calendarStage">
+
+      <!-- ===================================================================
+           [SECTION 3]: LEFT PANEL - DAILY LOG DETAILS
+           =================================================================== -->
+      <aside class="log-left-panel" id="section-log-left">
+        
+        <div class="cyber-frame log-frame">
+          
+          <!-- Corner Chamfered Brackets -->
+          <span class="corner-bracket top-left"></span>
+          <span class="corner-bracket top-right"></span>
+          <span class="corner-bracket bottom-left"></span>
+          <span class="corner-bracket bottom-right"></span>
+
+          <!-- Left Edge Cyber Notches & 3 Dots -->
+          <div class="frame-edge-deco edge-left">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Right Edge Cyber Notches & 3 Dots -->
+          <div class="frame-edge-deco edge-right">
+            <span class="deco-tab top"></span>
+            <div class="deco-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="deco-tab bottom"></span>
+          </div>
+
+          <!-- Header: Selected Date (NOV 15TH 2026) -->
+          <div class="log-header">
+            <h2 class="log-date-title" id="logDateTitle">NOV 15<sup>TH</sup> 2026</h2>
+          </div>
+
+          <!-- Daily Timed Log Entries Stack -->
+          <div class="log-entries-stack" id="logEntriesStack">
+            
+            <!-- Log Entry 1: 06:00 -->
+            <div class="log-entry-item">
+              <p class="log-text">
+                <strong class="log-time">06:00 &bull;</strong> Logged: 1 dose of lubricating eye drops used immediately upon waking to relieve dryness from cabin air circulation.
+              </p>
+            </div>
+
+            <!-- Log Entry 2: 07:30 -->
+            <div class="log-entry-item">
+              <p class="log-text">
+                <strong class="log-time">07:30 &bull;</strong> Morning vital signs checked. Resting heart rate and blood pressure match the astronaut's in-flight supine baseline.
+              </p>
+            </div>
+
+            <!-- Log Entry 3: 08:00 -->
+            <div class="log-entry-item">
+              <p class="log-text">
+                <strong class="log-time">08:00 &bull;</strong> Logged: 1 dose of Pseudoephedrine (nasal decongestant) taken to clear blocked sinuses before performing detailed microscopy work.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Bottom Flange -->
+          <div class="frame-bottom-flange">
+            <span class="flange-line"></span>
+            <span class="flange-notch"></span>
+            <span class="flange-line"></span>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- ===================================================================
+           [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+           NOTICE: CIRCLE 4 IS ACTIVE & DARKER (This is the CALENDAR page!)
+           =================================================================== -->
+      <nav class="dials-column" id="dials-column" aria-label="Page Navigation Circles">
+        
+        <!-- CIRCLE 1: Physiological Vitals -->
+        <a href="nasa.html" class="holo-dial dial-1" id="dial-1" title="Physiological Vitals">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">Physiological Vitals</span>
+        </a>
+
+        <!-- CIRCLE 2: STATS -->
+        <a href="profile.html" class="holo-dial dial-2" id="dial-2" title="STATS">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-ticks" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">STATS</span>
+        </a>
+
+        <!-- CIRCLE 3: ALERTS -->
+        <a href="alerts.html" class="holo-dial dial-3" id="dial-3" title="ALERTS">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed reverse" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">ALERTS</span>
+        </a>
+
+        <!-- CIRCLE 4: History log and calendar (ACTIVE & DARKER ON THIS PAGE!) -->
+        <a href="#" class="holo-dial dial-4 active" id="dial-4" title="History Log and Calendar (Current Page - Darker)">
+          <svg viewBox="0 0 80 80" class="dial-svg">
+            <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+            <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+            <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+            <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+            <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+            <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+            <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+            <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+          </svg>
+          <span class="dial-tooltip">Calendar (Current)</span>
+        </a>
+
+      </nav>
+
+      <!-- ===================================================================
+           [SECTION 5]: RIGHT MAIN PANEL - NOVEMBER 2026 CALENDAR GRID
+           =================================================================== -->
+      <section class="calendar-main-container" id="calendarMainContainer">
+        
+        <div class="calendar-cyber-frame">
+          
+          <!-- Month Header Row: "NOVEMBER" (Left) and "2026" (Right) -->
+          <div class="month-header-bar">
+            <h2 class="month-name">NOVEMBER</h2>
+            <h2 class="year-number">2026</h2>
+          </div>
+
+          <!-- Calendar Table Grid -->
+          <div class="calendar-grid-wrapper">
+            
+            <!-- Day of Week Header -->
+            <div class="cal-days-header">
+              <span class="day-col-name">SAT</span>
+              <span class="day-col-name">SUN</span>
+              <span class="day-col-name">MON</span>
+              <span class="day-col-name">TUE</span>
+              <span class="day-col-name">WED</span>
+              <span class="day-col-name">THU</span>
+              <span class="day-col-name">FRI</span>
+            </div>
+
+            <!-- Calendar Days 7x5 Grid -->
+            <div class="cal-days-grid" id="calDaysGrid">
+              
+              <!-- ===== ROW 1 ===== -->
+              <!-- 31 Oct (dimmed) -->
+              <div class="cal-day-cell dimmed" data-day="31" data-month="Oct">
+                <span class="day-num">31</span>
+                <span class="day-icon icon-workout-dim"></span>
+              </div>
+
+              <!-- 1 Nov: Rover -->
+              <div class="cal-day-cell" data-day="1">
+                <span class="day-num">1</span>
+                <div class="day-icon icon-rover" title="Planetary Rover Test"></div>
+              </div>
+
+              <!-- 2 Nov: Cargo Box -->
+              <div class="cal-day-cell" data-day="2">
+                <span class="day-num">2</span>
+                <div class="day-icon icon-box" title="Cargo Supply Unpack"></div>
+              </div>
+
+              <!-- 3 Nov: Checklist -->
+              <div class="cal-day-cell" data-day="3">
+                <span class="day-num">3</span>
+                <div class="day-icon icon-doc" title="Mission Checklist"></div>
+              </div>
+
+              <!-- 4 Nov: Robotic Arm -->
+              <div class="cal-day-cell" data-day="4">
+                <span class="day-num">4</span>
+                <div class="day-icon icon-robotarm" title="Robotic Arm Maneuver"></div>
+              </div>
+
+              <!-- 5 Nov: Workout -->
+              <div class="cal-day-cell" data-day="5">
+                <span class="day-num">5</span>
+                <div class="day-icon icon-workout" title="EVA Workout Protocol"></div>
+              </div>
+
+              <!-- 6 Nov: Ultrasound Monitor -->
+              <div class="cal-day-cell" data-day="6">
+                <span class="day-num">6</span>
+                <div class="day-icon icon-monitor" title="Ultrasound Medical Check"></div>
+              </div>
+
+              <!-- ===== ROW 2 ===== -->
+              <!-- 7 Nov: Gear / Maintenance -->
+              <div class="cal-day-cell" data-day="7">
+                <span class="day-num">7</span>
+                <div class="day-icon icon-gear" title="Hardware Maintenance"></div>
+              </div>
+
+              <!-- 8 Nov: Sanitation Mop -->
+              <div class="cal-day-cell" data-day="8">
+                <span class="day-num">8</span>
+                <div class="day-icon icon-cleaning" title="Cabin Sanitation"></div>
+              </div>
+
+              <!-- 9 Nov: Workout -->
+              <div class="cal-day-cell" data-day="9">
+                <span class="day-num">9</span>
+                <div class="day-icon icon-workout" title="EVA Workout Protocol"></div>
+              </div>
+
+              <!-- 10 Nov: Microscope -->
+              <div class="cal-day-cell" data-day="10">
+                <span class="day-num">10</span>
+                <div class="day-icon icon-microscope" title="Microscopy Research"></div>
+              </div>
+
+              <!-- 11 Nov: Checklist -->
+              <div class="cal-day-cell" data-day="11">
+                <span class="day-num">11</span>
+                <div class="day-icon icon-doc" title="Telemetry Log Review"></div>
+              </div>
+
+              <!-- 12 Nov -->
+              <div class="cal-day-cell" data-day="12">
+                <span class="day-num">12</span>
+              </div>
+
+              <!-- 13 Nov -->
+              <div class="cal-day-cell" data-day="13">
+                <span class="day-num">13</span>
+              </div>
+
+              <!-- ===== ROW 3 ===== -->
+              <!-- 14 Nov: Sanitation Mop -->
+              <div class="cal-day-cell" data-day="14">
+                <span class="day-num">14</span>
+                <div class="day-icon icon-cleaning" title="Cabin Sanitation"></div>
+              </div>
+
+              <!-- 15 Nov: ACTIVE SELECTED DAY! -->
+              <div class="cal-day-cell active-day" data-day="15">
+                <span class="day-num">15</span>
+                <div class="day-icon icon-workout" title="EVA Workout & Morning Baseline"></div>
+              </div>
+
+              <!-- 16 Nov: Gear / Maintenance -->
+              <div class="cal-day-cell" data-day="16">
+                <span class="day-num">16</span>
+                <div class="day-icon icon-gear" title="Hardware Maintenance"></div>
+              </div>
+
+              <!-- 17 Nov: Robotic Arm -->
+              <div class="cal-day-cell" data-day="17">
+                <span class="day-num">17</span>
+                <div class="day-icon icon-robotarm" title="Robotic Arm Truss Ops"></div>
+              </div>
+
+              <!-- 18 Nov: Coding Station -->
+              <div class="cal-day-cell" data-day="18">
+                <span class="day-num">18</span>
+                <div class="day-icon icon-code" title="Guidance Software Patch"></div>
+              </div>
+
+              <!-- 19 Nov: Workout -->
+              <div class="cal-day-cell" data-day="19">
+                <span class="day-num">19</span>
+                <div class="day-icon icon-workout" title="Aerobic Conditioning"></div>
+              </div>
+
+              <!-- 20 Nov: Checklist -->
+              <div class="cal-day-cell" data-day="20">
+                <span class="day-num">20</span>
+                <div class="day-icon icon-doc" title="Pre-EVA Briefing Log"></div>
+              </div>
+
+              <!-- ===== ROW 4 ===== -->
+              <!-- 20/21 Nov: Repeat 20 or nominal -->
+              <div class="cal-day-cell" data-day="20b">
+                <span class="day-num">20</span>
+              </div>
+
+              <!-- 21 Nov: Cleaning -->
+              <div class="cal-day-cell" data-day="21">
+                <span class="day-num">21</span>
+                <div class="day-icon icon-cleaning" title="Airlock Sanitation"></div>
+              </div>
+
+              <!-- 22 Nov: Astronaut EVA -->
+              <div class="cal-day-cell" data-day="22">
+                <span class="day-num">22</span>
+                <div class="day-icon icon-astronaut" title="Spacewalk EVA Ingress"></div>
+              </div>
+
+              <!-- 23 Nov: Gear / Maintenance -->
+              <div class="cal-day-cell" data-day="23">
+                <span class="day-num">23</span>
+                <div class="day-icon icon-gear" title="Hardware Maintenance"></div>
+              </div>
+
+              <!-- 24 Nov -->
+              <div class="cal-day-cell" data-day="24">
+                <span class="day-num">24</span>
+              </div>
+
+              <!-- 25 Nov: Checklist -->
+              <div class="cal-day-cell" data-day="25">
+                <span class="day-num">25</span>
+                <div class="day-icon icon-doc" title="Post-EVA Review"></div>
+              </div>
+
+              <!-- 26 Nov -->
+              <div class="cal-day-cell" data-day="26">
+                <span class="day-num">26</span>
+              </div>
+
+              <!-- ===== ROW 5 ===== -->
+              <!-- 27 Nov: Cleaning -->
+              <div class="cal-day-cell" data-day="27">
+                <span class="day-num">27</span>
+                <div class="day-icon icon-cleaning" title="Waste Management Service"></div>
+              </div>
+
+              <!-- 28 Nov: Plumbing Valve -->
+              <div class="cal-day-cell" data-day="28">
+                <span class="day-num">28</span>
+                <div class="day-icon icon-pipes" title="Water Recycling Loop Flush"></div>
+              </div>
+
+              <!-- 29 Nov: Video Comms -->
+              <div class="cal-day-cell" data-day="29">
+                <span class="day-num">29</span>
+                <div class="day-icon icon-video" title="Ground Comms Conference"></div>
+              </div>
+
+              <!-- 30 Nov -->
+              <div class="cal-day-cell" data-day="30">
+                <span class="day-num">30</span>
+              </div>
+
+              <!-- 1 Dec (dimmed) -->
+              <div class="cal-day-cell dimmed" data-day="1" data-month="Dec">
+                <span class="day-num">1</span>
+              </div>
+
+              <!-- 2 Dec (dimmed) -->
+              <div class="cal-day-cell dimmed" data-day="2" data-month="Dec">
+                <span class="day-num">2</span>
+                <div class="day-icon icon-rover dim"></div>
+              </div>
+
+              <!-- 3 Dec (dimmed) -->
+              <div class="cal-day-cell dimmed" data-day="3" data-month="Dec">
+                <span class="day-num">3</span>
+                <div class="day-icon icon-box dim"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Telemetry Toast -->
+  <div class="vitals-toast" id="vitals-toast" aria-hidden="true">
+    <span class="toast-indicator"></span>
+    <div class="toast-info">
+      <strong class="toast-title" id="toast-title">Calendar Day</strong>
+      <span class="toast-val" id="toast-val">Schedule info</span>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="calander.js"></script>
+</body>
+</html>

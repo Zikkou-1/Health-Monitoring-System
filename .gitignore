@@ -1,0 +1,48 @@
+# ── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.spec
+
+# Virtual environments
+pyenv/
+venv/
+.venv/
+env/
+
+# ── Generated files (run ./run-mission.sh to recreate) ──
+Monitoring/health.db
+Monitoring/health.db-wal
+Monitoring/health.db-shm
+Monitoring/model.joblib
+Monitoring/config.json
+Monitoring/data/
+
+# ── Node / Vite ──────────────────────────────────────
+Monitoring/node_modules/
+Monitoring/dist/
+Monitoring/.vite/
+
+# ── macOS ────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+*.swp
+*.swo
+
+# ── IDE / editors ────────────────────────────────────
+.vscode/
+.idea/
+*.code-workspace
+
+# ── PlatformIO (Mock Input embedded) ─────────────────
+Mock\ Input/.pio/
+Mock\ Input/.vscode/
+
+# ── Misc ─────────────────────────────────────────────
+*.log
+*.bak

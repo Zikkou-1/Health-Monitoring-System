@@ -1,0 +1,1212 @@
+/* ==========================================================================
+   NASA EVA BIOTELEMETRY HUD - EXPEDITION 74
+   MASTER STYLESHEET WITH MULTI-STATE DIAGNOSTICS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   GLOBAL CSS VARIABLES & COLOR PALETTES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Default Cyan Sci-Fi Palette */
+  --hud-cyan: #00e5ff;
+  --hud-cyan-bright: #33eeff;
+  --hud-cyan-dim: #008ba3;
+  --hud-cyan-faint: rgba(0, 229, 255, 0.12);
+  --hud-cyan-glow: rgba(0, 229, 255, 0.55);
+  
+  /* 1. GREEN STATE: Safe / Nominal */
+  --state-green: #00ff88;
+  --state-green-bright: #33ffa3;
+  --state-green-dim: #00b35f;
+  --state-green-glow: rgba(0, 255, 136, 0.65);
+  --state-green-bg: rgba(2, 28, 16, 0.88);
+  
+  /* 2. YELLOW STATE: Caution / Bit Danger (Elevated BP) */
+  --state-yellow: #f8c000;
+  --state-yellow-bright: #ffd700;
+  --state-yellow-dim: #b88d00;
+  --state-yellow-glow: rgba(248, 192, 0, 0.7);
+  --state-yellow-bg: rgba(24, 20, 4, 0.9);
+  
+  /* 3. RED STATE: Critical / Dangerous (Solar Flare Radiation) */
+  --state-red: #ff1a2a;
+  --state-red-bright: #ff4d5a;
+  --state-red-dim: #b30f1c;
+  --state-red-glow: rgba(255, 26, 42, 0.85);
+  --state-red-bg: rgba(32, 5, 8, 0.92);
+  
+  /* Backgrounds & Glass */
+  --hud-bg-space: #030814;
+  --hud-bg-glass: rgba(2, 20, 36, 0.75);
+  --hud-bg-glass-card: rgba(3, 24, 44, 0.82);
+  
+  /* Typography */
+  --font-hud-square: 'Chakra Petch', sans-serif;
+  --font-hud-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-tech-clean: 'Rajdhani', sans-serif;
+  --font-telemetry: 'Share Tech Mono', monospace;
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hud-bg-space);
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+}
+
+/* ==========================================================================
+   [SECTION 1]: BACKGROUND & ATMOSPHERE
+   ========================================================================== */
+.space-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 75% 40%, rgba(14, 52, 92, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 25% 65%, rgba(6, 32, 64, 0.55) 0%, transparent 70%),
+    url('Health app.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020712;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.space-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(1, 6, 16, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   MAIN HUD LAYOUT CONTAINER
+   ========================================================================== */
+.hud-container {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  padding: 2.2vh 3.2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   [SECTION 2]: TOP HEADER & DEMO STATE SWITCHER
+   ========================================================================== */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 30;
+  position: relative;
+}
+
+/* Astronaut Profile Badge */
+.crew-badge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-ring {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  animation: rotateCW 30s linear infinite;
+}
+
+.reticle-ring .ring-track {
+  fill: none;
+  stroke: rgba(0, 229, 255, 0.25);
+  stroke-width: 1.2;
+}
+
+.reticle-ring .ring-glow {
+  fill: none;
+  stroke: var(--hud-cyan);
+  stroke-width: 2.2;
+  stroke-dasharray: 45 150;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+}
+
+.reticle-ring .ring-dashes {
+  fill: none;
+  stroke: var(--hud-cyan-bright);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 9;
+}
+
+.reticle-ring .ring-ticks {
+  fill: none;
+  stroke: rgba(0, 229, 255, 0.5);
+  stroke-width: 1.8;
+  stroke-dasharray: 1 15;
+}
+
+.avatar-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--hud-cyan);
+  box-shadow: 0 0 15px var(--hud-cyan-glow), inset 0 0 8px rgba(0, 229, 255, 0.4);
+  background: #021220;
+}
+
+.avatar-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crew-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crew-name {
+  font-family: var(--font-hud-square);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  line-height: 1.05;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+.crew-role,
+.crew-mission {
+  font-family: var(--font-hud-square);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #c2e2f2;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+/* Quick State Switcher (Green, Yellow, Red Demo Buttons) */
+.state-quick-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(2, 20, 36, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  padding: 6px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+}
+
+.switcher-label {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: #a4dcff;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.switch-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-hud-square);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  color: #d8f3ff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.switch-btn .badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.switch-btn.switch-green .badge-dot { background: var(--state-green); box-shadow: 0 0 6px var(--state-green); }
+.switch-btn.switch-yellow .badge-dot { background: var(--state-yellow); box-shadow: 0 0 6px var(--state-yellow); }
+.switch-btn.switch-red .badge-dot { background: var(--state-red); box-shadow: 0 0 6px var(--state-red); }
+
+.switch-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.switch-btn.switch-green.active {
+  background: rgba(0, 255, 136, 0.18);
+  border-color: var(--state-green);
+  color: var(--state-green-bright);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+.switch-btn.switch-yellow.active {
+  background: rgba(248, 192, 0, 0.18);
+  border-color: var(--state-yellow);
+  color: var(--state-yellow-bright);
+  box-shadow: 0 0 10px rgba(248, 192, 0, 0.4);
+}
+
+.switch-btn.switch-red.active {
+  background: rgba(255, 26, 42, 0.22);
+  border-color: var(--state-red);
+  color: #ff858f;
+  box-shadow: 0 0 12px rgba(255, 26, 42, 0.5);
+}
+
+/* NASA Logo Top Right */
+.nasa-branding {
+  display: flex;
+  align-items: center;
+}
+
+.nasa-logo-svg {
+  width: 155px;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 15px rgba(0, 229, 255, 0.35));
+}
+
+/* ==========================================================================
+   MAIN HUD STAGE LAYOUT: (LEFT CLUSTER) - (CENTER ASTRONAUT) - (RIGHT PANEL)
+   ========================================================================== */
+.hud-stage {
+  display: grid;
+  grid-template-columns: auto 1fr 310px;
+  align-items: center;
+  height: calc(100vh - 110px);
+  position: relative;
+  gap: 20px;
+  z-index: 20;
+}
+
+/* ==========================================================================
+   [SECTION 3]: LEFT CONTROL CLUSTER
+   (Bio Markers Panel + Dials + 4 Blue Buttons Placed Close Together)
+   ========================================================================== */
+.left-control-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  max-height: 540px;
+  position: relative;
+}
+
+/* 1. Bio Markers Vitals Frame */
+.vitals-panel-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.cyber-frame {
+  position: relative;
+  background: var(--hud-bg-glass);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.vitals-frame {
+  width: 250px;
+  padding: 18px 14px;
+  border-radius: 4px;
+  clip-path: polygon(
+    0 16px, 16px 0, 
+    calc(100% - 16px) 0, 100% 16px, 
+    100% calc(100% - 16px), calc(100% - 16px) 100%, 
+    16px 100%, 0 calc(100% - 16px)
+  );
+}
+
+/* Chamfered Corners */
+.corner-bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+.corner-bracket.top-left { top: -2px; left: -2px; border-top: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.top-right { top: -2px; right: -2px; border-top: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-left { bottom: -2px; left: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-right { bottom: -2px; right: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+
+/* Left & Right Edge Cyber Notches & 3 Dots */
+.frame-edge-deco {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+  pointer-events: none;
+}
+.frame-edge-deco.edge-left { left: -6px; }
+.frame-edge-deco.edge-right { right: -6px; }
+
+.frame-edge-deco .deco-tab {
+  width: 5px; height: 12px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.frame-edge-deco .deco-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frame-edge-deco .deco-dots .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 5px var(--hud-cyan-bright);
+}
+
+.vitals-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.vitals-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+/* Vitals List Items */
+.vitals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.vital-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+  background: transparent;
+}
+
+.vital-item:hover {
+  background: rgba(0, 229, 255, 0.12);
+  border-color: rgba(0, 229, 255, 0.4);
+  transform: translateX(3px);
+}
+
+/* 1. Active Green Highlight */
+.vital-item.active-green {
+  background: rgba(0, 255, 136, 0.18);
+  border-color: var(--state-green);
+  box-shadow: 0 0 14px var(--state-green-glow), inset 0 0 8px rgba(0, 255, 136, 0.2);
+}
+.vital-item.active-green .vital-icon-box {
+  color: var(--state-green);
+  filter: drop-shadow(0 0 8px var(--state-green));
+}
+.vital-item.active-green .vital-label {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--state-green);
+}
+
+/* 2. Active Yellow Highlight (Blood Pressure - Image 1) */
+.vital-item.active-yellow {
+  background: rgba(248, 192, 0, 0.18);
+  border-color: var(--state-yellow);
+  box-shadow: 0 0 16px var(--state-yellow-glow), inset 0 0 8px rgba(248, 192, 0, 0.25);
+}
+.vital-item.active-yellow .vital-icon-box {
+  color: var(--state-yellow);
+  filter: drop-shadow(0 0 8px var(--state-yellow));
+}
+.vital-item.active-yellow .vital-label {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--state-yellow);
+}
+
+/* 3. Active Red Highlight (Radiation - Image 2) */
+.vital-item.active-red {
+  background: rgba(255, 26, 42, 0.22);
+  border-color: var(--state-red);
+  box-shadow: 0 0 18px var(--state-red-glow), inset 0 0 10px rgba(255, 26, 42, 0.3);
+}
+.vital-item.active-red .vital-icon-box {
+  color: var(--state-red);
+  filter: drop-shadow(0 0 10px var(--state-red));
+}
+.vital-item.active-red .vital-label {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--state-red);
+}
+
+.vital-item.dimmed {
+  opacity: 0.45;
+}
+
+.vital-icon-box {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--hud-cyan);
+  filter: drop-shadow(0 0 5px var(--hud-cyan-glow));
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.vital-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.vital-label {
+  font-family: var(--font-hud-square);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+  white-space: nowrap;
+}
+
+.frame-bottom-flange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  opacity: 0.75;
+}
+.flange-line { flex: 1; height: 1.5px; background: var(--hud-cyan); }
+.flange-notch { width: 12px; height: 4px; background: var(--hud-cyan); transform: skewX(-35deg); }
+
+/* ==========================================================================
+   2. HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+   ==========================================================================
+   - The rectangular buttons with writings are removed.
+   - The 4 circles are the navigation buttons.
+   - Whichever page you are currently on, add the class "active" to that circle,
+     and it will appear visibly DARKER than the other circles!
+   ========================================================================== */
+.dials-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 420px;
+  z-index: 15;
+  width: 52px;
+  margin-left: 8px;
+}
+
+/* Individual Circle Button */
+.holo-dial {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+/* INACTIVE CIRCLES: Glowing, bright, transparent cyan */
+.holo-dial:not(.active) {
+  background: transparent;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+}
+
+.holo-dial:not(.active):hover {
+  transform: scale(1.16);
+  filter: drop-shadow(0 0 12px var(--hud-cyan-bright)) brightness(1.25);
+}
+
+/* ACTIVE CIRCLE: WHENEVER ON THIS PAGE, THIS CIRCLE GETS NOTICEABLY DARKER! */
+.holo-dial.active {
+  background: radial-gradient(circle at center, #01060e 50%, #031422 100%);
+  border: 1.8px solid #004d5c;
+  box-shadow: 
+    inset 0 0 16px rgba(0, 0, 0, 0.95),
+    inset 0 0 6px #010810,
+    0 0 8px rgba(0, 160, 200, 0.25);
+  transform: scale(0.96);
+  filter: brightness(0.62) contrast(1.15);
+}
+
+.holo-dial.active .ring-outer-dashed {
+  stroke: #005060;
+  stroke-width: 1.4;
+  animation-duration: 24s;
+}
+
+.holo-dial.active .ring-middle-arc {
+  stroke: #006b80;
+  stroke-width: 1.8;
+  filter: none;
+  animation-duration: 18s;
+}
+
+.holo-dial.active .ring-inner-dashed,
+.holo-dial.active .ring-inner-ticks {
+  stroke: #003e4d;
+}
+
+.holo-dial.active .ring-core-glow {
+  fill: #01050a;
+  stroke: #003542;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8));
+}
+
+.holo-dial.active .dial-crosshair {
+  stroke: #004552;
+}
+
+.holo-dial.active:hover {
+  transform: scale(1.04);
+  filter: brightness(0.78);
+}
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ring-outer-dashed { fill: none; stroke: var(--hud-cyan); stroke-width: 1.6; stroke-dasharray: 14 7 4 7; animation: rotateCW 12s linear infinite; transform-origin: center; }
+.ring-outer-dashed.reverse { animation: rotateCCW 10s linear infinite; }
+.ring-middle-arc { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 2.2; stroke-dasharray: 45 70; animation: rotateCCW 8s linear infinite; transform-origin: center; }
+.ring-middle-arc.reverse { animation: rotateCW 9s linear infinite; }
+.ring-inner-dashed { fill: none; stroke: rgba(0, 229, 255, 0.7); stroke-width: 1.5; stroke-dasharray: 6 6; animation: rotateCW 6s linear infinite; transform-origin: center; }
+.ring-inner-ticks { fill: none; stroke: var(--hud-cyan); stroke-width: 1.8; stroke-dasharray: 2 6; }
+.ring-core-glow { fill: rgba(0, 229, 255, 0.4); stroke: var(--hud-cyan-bright); stroke-width: 1.5; }
+.dial-crosshair { stroke: var(--hud-cyan); stroke-width: 1.5; stroke-linecap: round; }
+
+/* Tooltip on hover showing circle destination */
+.dial-tooltip {
+  position: absolute;
+  left: 60px;
+  background: rgba(2, 20, 36, 0.95);
+  border: 1px solid var(--hud-cyan);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-hud-square);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+  z-index: 50;
+}
+
+.holo-dial:hover .dial-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+  line-height: 1.15;
+  font-size: 1.05rem;
+}
+
+.btn-stats .btn-text,
+.btn-alerts .btn-text {
+  font-size: 1.35rem;
+  letter-spacing: 1.5px;
+}
+
+/* ==========================================================================
+   [SECTION 4]: CENTER ASTRONAUT & TELEMETRY HUD DATA DISPLAY
+   ========================================================================== */
+.astronaut-center-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  z-index: 15;
+}
+
+/* Top Emergency Alarm Reticle (Active in Red State) */
+.alarm-reticle {
+  position: absolute;
+  top: 6%;
+  left: 22%;
+  width: 58px;
+  height: 58px;
+  z-index: 28;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+body.state-red .alarm-reticle {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulseAlarm 1.2s infinite alternate;
+}
+
+.alarm-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.alarm-ring-outer {
+  fill: none;
+  stroke: var(--state-red);
+  stroke-width: 2;
+  stroke-dasharray: 12 6;
+  animation: rotateCW 6s linear infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 0 8px var(--state-red));
+}
+
+.alarm-ring-inner {
+  fill: rgba(255, 26, 42, 0.15);
+  stroke: var(--state-red-bright);
+  stroke-width: 1.5;
+}
+
+.alarm-triangle {
+  fill: none;
+  stroke: var(--state-red-bright);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px var(--state-red));
+}
+
+.alarm-exclamation {
+  fill: #ffffff;
+  font-family: var(--font-hud-display);
+  font-size: 16px;
+  font-weight: 900;
+  filter: drop-shadow(0 0 4px var(--state-red));
+}
+
+/* FLOATING TELEMETRY READING BOX */
+.floating-reading-box {
+  position: absolute;
+  top: 14%;
+  left: 20%;
+  width: 175px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  z-index: 25;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  clip-path: polygon(
+    0 12px, 12px 0, 
+    calc(100% - 12px) 0, 100% 12px, 
+    100% calc(100% - 12px), calc(100% - 12px) 100%, 
+    12px 100%, 0 calc(100% - 12px)
+  );
+}
+
+/* Reading Box Themes */
+.floating-reading-box.theme-green {
+  background: var(--state-green-bg);
+  border: 2px solid var(--state-green);
+  box-shadow: 0 0 20px var(--state-green-glow), inset 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.floating-reading-box.theme-yellow {
+  background: var(--state-yellow-bg);
+  border: 2px solid var(--state-yellow);
+  box-shadow: 0 0 22px var(--state-yellow-glow), inset 0 0 12px rgba(248, 192, 0, 0.25);
+}
+
+.floating-reading-box.theme-red {
+  background: var(--state-red-bg);
+  border: 2px solid var(--state-red);
+  box-shadow: 0 0 26px var(--state-red-glow), inset 0 0 14px rgba(255, 26, 42, 0.35);
+}
+
+.reading-frame {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.reading-digits {
+  font-family: var(--font-hud-display);
+  font-size: 2.1rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.theme-green .reading-digits { color: #ffffff; text-shadow: 0 0 12px var(--state-green); }
+.theme-yellow .reading-digits { color: var(--state-yellow); text-shadow: 0 0 12px var(--state-yellow); }
+.theme-red .reading-digits { color: #ffffff; text-shadow: 0 0 16px var(--state-red); font-style: italic; }
+
+.val-divider {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+  margin: 0 2px;
+}
+
+.reading-unit {
+  font-family: var(--font-hud-square);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.theme-green .reading-unit { color: var(--state-green); }
+.theme-yellow .reading-unit { color: var(--state-yellow); }
+.theme-red .reading-unit { color: var(--state-red); }
+
+/* Bottom-left Decorative Hazard Slashes /// */
+.reading-hazard-slashes {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.reading-hazard-slashes .slash {
+  width: 10px;
+  height: 3.5px;
+  transform: skewX(-35deg);
+}
+
+.theme-green .reading-hazard-slashes .slash { background: var(--state-green); box-shadow: 0 0 4px var(--state-green); }
+.theme-yellow .reading-hazard-slashes .slash { background: var(--state-yellow); box-shadow: 0 0 4px var(--state-yellow); }
+.theme-red .reading-hazard-slashes .slash { background: var(--state-red); box-shadow: 0 0 5px var(--state-red); }
+
+/* Telemetry Leader Line to Astronaut */
+.telemetry-leader-line-container {
+  position: absolute;
+  top: 17%;
+  left: 31%;
+  width: 250px;
+  height: 130px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.leader-line-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.leader-path {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s, filter 0.3s;
+}
+
+.leader-path.theme-green { stroke: var(--state-green); filter: drop-shadow(0 0 6px var(--state-green)); }
+.leader-path.theme-yellow { stroke: var(--state-yellow); filter: drop-shadow(0 0 7px var(--state-yellow)); }
+.leader-path.theme-red { stroke: var(--state-red); filter: drop-shadow(0 0 8px var(--state-red)); }
+
+.leader-dot {
+  stroke-width: 2;
+  animation: pulseDot 1.5s infinite alternate;
+}
+
+.leader-dot.theme-green { fill: #ffffff; stroke: var(--state-green); filter: drop-shadow(0 0 6px var(--state-green)); }
+.leader-dot.theme-yellow { fill: #ffffff; stroke: var(--state-yellow); filter: drop-shadow(0 0 6px var(--state-yellow)); }
+.leader-dot.theme-red { fill: #ffffff; stroke: var(--state-red); filter: drop-shadow(0 0 8px var(--state-red)); }
+
+/* Astronaut Viewport */
+.astronaut-viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 85vh;
+  max-height: 720px;
+  z-index: 10;
+}
+
+.astronaut-img {
+  height: 100%;
+  max-height: 720px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 35px rgba(0, 200, 255, 0.28));
+  animation: astronautFloat 7s ease-in-out infinite alternate;
+}
+
+.suit-sensor-target {
+  position: absolute;
+  top: 36.5%;
+  left: 51.5%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+body.state-green .suit-sensor-target { background: var(--state-green); box-shadow: 0 0 10px var(--state-green); }
+body.state-yellow .suit-sensor-target { background: var(--state-yellow); box-shadow: 0 0 12px var(--state-yellow); }
+body.state-red .suit-sensor-target { background: var(--state-red); box-shadow: 0 0 15px var(--state-red); }
+
+/* LOWER PROBABLE CAUSE & ACTION CARD */
+.cause-action-card {
+  position: absolute;
+  bottom: 12%;
+  left: 17%;
+  width: 255px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  z-index: 25;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  clip-path: polygon(
+    0 12px, 12px 0, 
+    calc(100% - 12px) 0, 100% 12px, 
+    100% calc(100% - 12px), calc(100% - 12px) 100%, 
+    12px 100%, 0 calc(100% - 12px)
+  );
+}
+
+.cause-action-card.theme-green {
+  background: var(--state-green-bg);
+  border: 1.8px solid var(--state-green);
+  box-shadow: 0 0 18px var(--state-green-glow);
+}
+
+.cause-action-card.theme-yellow {
+  background: var(--state-yellow-bg);
+  border: 1.8px solid var(--state-yellow);
+  box-shadow: 0 0 20px var(--state-yellow-glow);
+}
+
+.cause-action-card.theme-red {
+  background: var(--state-red-bg);
+  border: 1.8px solid var(--state-red);
+  box-shadow: 0 0 24px var(--state-red-glow);
+}
+
+.cause-badge {
+  display: inline-block;
+  font-family: var(--font-hud-square);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.theme-green .cause-badge { background: var(--state-green); color: #021a0f; }
+.theme-yellow .cause-badge { background: var(--state-yellow); color: #1a1502; font-weight: 800; }
+.theme-red .cause-badge { background: var(--state-red); color: #ffffff; text-shadow: 0 0 6px #000; }
+
+.cause-row, .action-row {
+  margin-bottom: 8px;
+}
+
+.cause-label, .action-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
+}
+
+.theme-green .cause-label, .theme-green .action-label { color: var(--state-green); }
+.theme-yellow .cause-label, .theme-yellow .action-label { color: var(--state-yellow); }
+.theme-red .cause-label, .theme-red .action-label { color: var(--state-red-bright); }
+
+.cause-text, .action-text {
+  font-size: 0.86rem;
+  line-height: 1.25;
+  color: #eaf6ff;
+}
+
+.card-corner-slashes {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.card-corner-slashes .slash {
+  width: 10px; height: 3px;
+  transform: skewX(-35deg);
+}
+.theme-green .card-corner-slashes .slash { background: var(--state-green); }
+.theme-yellow .card-corner-slashes .slash { background: var(--state-yellow); }
+.theme-red .card-corner-slashes .slash { background: var(--state-red); }
+
+/* ==========================================================================
+   [SECTION 5]: RIGHT TELEMETRY & SURGEON LOG PANEL
+   ========================================================================== */
+.right-telemetry-stage {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  max-height: 520px;
+  z-index: 20;
+}
+
+.telemetry-card {
+  position: relative;
+  width: 100%;
+  padding: 18px 16px;
+  border-radius: 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  clip-path: polygon(
+    0 16px, 16px 0, 
+    calc(100% - 16px) 0, 100% 16px, 
+    100% calc(100% - 16px), calc(100% - 16px) 100%, 
+    16px 100%, 0 calc(100% - 16px)
+  );
+}
+
+.telemetry-card.theme-green {
+  background: var(--state-green-bg);
+  border: 1.8px solid var(--state-green);
+  box-shadow: 0 0 18px var(--state-green-glow);
+}
+
+.telemetry-card.theme-yellow {
+  background: var(--state-yellow-bg);
+  border: 1.8px solid var(--state-yellow);
+  box-shadow: 0 0 20px var(--state-yellow-glow);
+}
+
+.telemetry-card.theme-red {
+  background: var(--state-red-bg);
+  border: 1.8px solid var(--state-red);
+  box-shadow: 0 0 24px var(--state-red-glow);
+}
+
+/* Top-Right Cyber Slashes // */
+.panel-header-slashes {
+  position: absolute;
+  top: 10px;
+  right: 18px;
+  display: flex;
+  gap: 5px;
+}
+
+.panel-header-slashes .slash {
+  width: 14px;
+  height: 4px;
+  transform: skewX(-35deg);
+}
+
+.theme-green .panel-header-slashes .slash { background: var(--state-green); box-shadow: 0 0 5px var(--state-green); }
+.theme-yellow .panel-header-slashes .slash { background: var(--state-yellow); box-shadow: 0 0 5px var(--state-yellow); }
+.theme-red .panel-header-slashes .slash { background: var(--state-red); box-shadow: 0 0 6px var(--state-red); }
+
+.telemetry-card-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.theme-green .telemetry-card-title { color: var(--state-green-bright); text-shadow: 0 0 8px var(--state-green); }
+.theme-yellow .telemetry-card-title { color: var(--state-yellow-bright); text-shadow: 0 0 8px var(--state-yellow); }
+.theme-red .telemetry-card-title { color: var(--state-red-bright); text-shadow: 0 0 10px var(--state-red); }
+
+.telemetry-data-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.telemetry-data-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.telemetry-data-list .bullet {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.theme-green .telemetry-data-list .bullet { color: var(--state-green); }
+.theme-yellow .telemetry-data-list .bullet { color: var(--state-yellow); }
+.theme-red .telemetry-data-list .bullet { color: var(--state-red); }
+
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.param-name {
+  font-family: var(--font-hud-square);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #cfebf8;
+}
+
+.param-val {
+  font-family: var(--font-telemetry);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+/* Quick Toast Notification */
+.vitals-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(2, 24, 44, 0.94);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 20px var(--hud-cyan-glow);
+  padding: 8px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vitals-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan-bright);
+}
+
+.toast-title {
+  display: block;
+  font-size: 0.78rem;
+  color: #7adcf5;
+  text-transform: uppercase;
+}
+
+.toast-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+@keyframes astronautFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.4deg); }
+  100% { transform: translateY(4px) rotate(-0.3deg); }
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.25); opacity: 1; }
+}
+
+@keyframes pulseAlarm {
+  0% { transform: scale(0.95); filter: drop-shadow(0 0 6px var(--state-red)); }
+  100% { transform: scale(1.08); filter: drop-shadow(0 0 18px var(--state-red)); }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Adaptive Scaling)
+   ========================================================================== */
+@media (max-width: 1400px) {
+  .hud-stage {
+    grid-template-columns: auto 1fr 270px;
+    gap: 14px;
+  }
+  .buttons-column {
+    width: 175px;
+  }
+  .vitals-frame {
+    width: 230px;
+  }
+  .floating-reading-box {
+    left: 14%;
+  }
+  .cause-action-card {
+    left: 10%;
+  }
+}

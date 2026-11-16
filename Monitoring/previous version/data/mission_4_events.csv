@@ -1,0 +1,6 @@
+phase,biomarker,shock,start_day,duration_days
+transit,IL_6,60.272,36,3
+transit,body_temp,1.786,37,3
+transit,bpm_resting,57.362,46,1
+mars,hrv,-38.024,68,2
+mars,b_glucose_mg_dl,30.443,80,4

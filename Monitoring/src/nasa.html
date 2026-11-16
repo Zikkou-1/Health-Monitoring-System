@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA EVA Biotelemetry HUD - Expedition 74</title>
+  
+  <!-- =======================================================================
+       GOOGLE FONTS (Sci-Fi & Cyber Typography)
+       - Chakra Petch: Exact futuristic squared HUD font from the image
+       - Orbitron: Iconic NASA display font
+       - Rajdhani: Clean condensed aerospace typography
+       - Share Tech Mono: Telemetry readouts
+       ======================================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="nasa.css">
+</head>
+<body class="state-green">
+
+  <!-- =======================================================================
+       [SECTION 1]: BACKGROUND & STARFIELD CANVAS
+       ======================================================================= -->
+  <div class="space-background" id="section-background">
+    <canvas id="starfield"></canvas>
+    <div class="space-vignette"></div>
+  </div>
+
+  <!-- =======================================================================
+       MAIN HUD CONTAINER
+       ======================================================================= -->
+  <main class="hud-container">
+
+    <!-- =====================================================================
+         [SECTION 2]: TOP HEADER - ASTRONAUT PROFILE (LEFT) & NASA LOGO (RIGHT)
+         =====================================================================
+         HOW TO EDIT:
+         - Change astronaut photo: update 'Health app (4).png'
+         - Change name, role, or expedition text directly below
+         ===================================================================== -->
+    <header class="hud-header" id="section-header">
+      
+      <!-- Top Left: Astronaut Crew Profile Badge -->
+      <div class="crew-badge" id="crew-profile">
+        <div class="avatar-frame">
+          <svg class="reticle-ring" viewBox="0 0 100 100">
+            <circle class="ring-track" cx="50" cy="50" r="46" />
+            <circle class="ring-glow" cx="50" cy="50" r="46" />
+            <circle class="ring-dashes" cx="50" cy="50" r="46" />
+            <circle class="ring-ticks" cx="50" cy="50" r="46" />
+          </svg>
+          
+          <div class="avatar-photo">
+            <img id="profile-image" src="Health app (4).png" alt="Hiba - Mission Specialist" onerror="this.onerror=null; this.src='Health app (4).png'">
+          </div>
+        </div>
+
+        <div class="crew-info">
+          <h1 class="crew-name" id="crew-name">Hiba</h1>
+          <span class="crew-role" id="crew-role">MISSION SPECIALIST</span>
+          <span class="crew-mission" id="crew-mission">AESS EXPEDITION 74</span>
+        </div>
+      </div>
+
+      <!-- Quick Status Switcher (Green Safe, Yellow Caution, Red Danger) -->
+      <div class="state-quick-switcher" title="Quick switch between 3 status demo modes">
+        <span class="switcher-label">DEMO STATES:</span>
+        <button class="switch-btn switch-green active" data-state="green" title="Green: Safe / Nominal State">
+          <span class="badge-dot"></span> SAFE (GREEN)
+        </button>
+        <button class="switch-btn switch-yellow" data-state="yellow" title="Yellow: Caution / Bit Danger State (Elevated BP)">
+          <span class="badge-dot"></span> CAUTION (YELLOW)
+        </button>
+        <button class="switch-btn switch-red" data-state="red" title="Red: Critical / Dangerous State (Solar Flare Radiation)">
+          <span class="badge-dot"></span> DANGER (RED)
+        </button>
+      </div>
+
+      <!-- Top Right: NASA Official Worm Logo -->
+      <div class="nasa-branding" id="nasa-logo">
+        <svg class="nasa-logo-svg" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+          <g class="nasa-worm-strokes" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- N -->
+            <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+            <!-- A -->
+            <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+            <!-- S -->
+            <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+            <!-- A -->
+            <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+          </g>
+        </svg>
+      </div>
+
+    </header>
+
+    <!-- =====================================================================
+         MAIN DASHBOARD STAGE: (LEFT CLUSTER) - (CENTER ASTRONAUT) - (RIGHT LOG)
+         ===================================================================== -->
+    <div class="hud-stage" id="hudStage">
+
+      <!-- ===================================================================
+           [SECTION 3]: LEFT CONTROL CLUSTER
+           Includes:
+           1. Bio Markers Vitals List
+           2. 4 Holographic Rotating Dials
+           3. 4 Blue Action Buttons (Positioned CLOSER & ready for external links!)
+           =================================================================== -->
+      <div class="left-control-cluster" id="section-left-cluster">
+        
+        <!-- 1. Bio Markers Vitals Panel -->
+        <section class="vitals-panel-container" id="section-vitals">
+          
+          <div class="cyber-frame vitals-frame">
+            
+            <!-- Corner Brackets -->
+            <span class="corner-bracket top-left"></span>
+            <span class="corner-bracket top-right"></span>
+            <span class="corner-bracket bottom-left"></span>
+            <span class="corner-bracket bottom-right"></span>
+
+            <!-- Edge Cyber Notches & 3 Dots -->
+            <div class="frame-edge-deco edge-left">
+              <span class="deco-tab top"></span>
+              <div class="deco-dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <span class="deco-tab bottom"></span>
+            </div>
+
+            <div class="frame-edge-deco edge-right">
+              <span class="deco-tab top"></span>
+              <div class="deco-dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <span class="deco-tab bottom"></span>
+            </div>
+
+            <div class="vitals-header">
+              <h2 class="vitals-title">Physiological Vitals</h2>
+            </div>
+
+            <!-- List of Bio Markers -->
+            <div class="vitals-list" id="vitals-list">
+              
+              <!-- 1. Heart Rate (GREEN SAFE EXAMPLE) -->
+              <div class="vital-item active-green" data-vital="heart-rate" data-state="green" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-heart">
+                    <path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    <line x1="3" y1="7" x2="21" y2="7" stroke="rgba(2, 22, 38, 0.9)" stroke-width="1.3"/>
+                    <line x1="2.5" y1="10.5" x2="21.5" y2="10.5" stroke="rgba(2, 22, 38, 0.9)" stroke-width="1.3"/>
+                    <line x1="4.5" y1="14" x2="19.5" y2="14" stroke="rgba(2, 22, 38, 0.9)" stroke-width="1.3"/>
+                    <line x1="7.5" y1="17.5" x2="16.5" y2="17.5" stroke="rgba(2, 22, 38, 0.9)" stroke-width="1.3"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Heart Rate</span>
+              </div>
+
+              <!-- 2. Blood Pressure (YELLOW CAUTION EXAMPLE) -->
+              <div class="vital-item" data-vital="blood-pressure" data-state="yellow" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-bp">
+                    <path fill="currentColor" d="M12 2.6C12 2.6 5.5 11 5.5 15.2a6.5 6.5 0 0 0 13 0C18.5 11 12 2.6 12 2.6z"/>
+                    <polyline points="7.5,15.5 9.5,15.5 11,12 13,18 14.5,14 16.5,15.5" fill="none" stroke="rgba(2, 22, 38, 0.95)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Blood Pressure</span>
+              </div>
+
+              <!-- 3. Blood Oxygen (GREEN SAFE) -->
+              <div class="vital-item" data-vital="blood-oxygen" data-state="green" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-lungs">
+                    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 3v9M9.5 5.5L7 7M14.5 5.5L17 7"/>
+                    <path fill="currentColor" d="M10.5 9C7.5 9 5 11.5 5 15c0 3.5 2 6 5 6h1V9h-0.5zm3 0C16.5 9 19 11.5 19 15c0 3.5-2 6-5 6h-1V9h1z"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Blood Oxygen</span>
+              </div>
+
+              <!-- 4. Temperature (GREEN SAFE) -->
+              <div class="vital-item" data-vital="temperature" data-state="green" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-temp">
+                    <path fill="currentColor" d="M15 13V5a3 3 0 0 0-6 0v8a5 5 0 1 0 6 0zm-3-10a1 1 0 0 1 1 1v4h-2V4a1 1 0 0 1 1-1zm0 17a3 3 0 0 1-2-5.24V10h4v4.76A3 3 0 0 1 12 20z"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Temperature</span>
+              </div>
+
+              <!-- 5. HRV (YELLOW CAUTION) -->
+              <div class="vital-item" data-vital="hrv" data-state="yellow" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-hrv">
+                    <path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                  </svg>
+                </div>
+                <span class="vital-label">HRV</span>
+              </div>
+
+              <!-- 6. Radiation (RED DANGEROUS EXAMPLE) -->
+              <div class="vital-item" data-vital="radiation" data-state="red" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-radiation">
+                    <circle cx="12" cy="12" r="2.8" fill="currentColor"/>
+                    <path fill="currentColor" d="M12 2a10 10 0 0 0-5 1.34l2.5 4.33A5 5 0 0 1 12 7V2zm-7 8.66A10 10 0 0 0 7 19.32l2.5-4.33A5 5 0 0 1 7 12H2zm15 0a5 5 0 0 1-2.5 3l2.5 4.33A10 10 0 0 0 22 10.66h-5z"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Radiation</span>
+              </div>
+
+              <!-- 7. Hydration Status (Optional / Dimmed) -->
+              <div class="vital-item dimmed" data-vital="hydration" data-state="green" tabindex="0">
+                <div class="vital-icon-box">
+                  <svg viewBox="0 0 24 24" class="vital-svg icon-hydration">
+                    <path fill="currentColor" d="M12 2.6C12 2.6 5.5 11 5.5 15.2a6.5 6.5 0 0 0 13 0C18.5 11 12 2.6 12 2.6z"/>
+                  </svg>
+                </div>
+                <span class="vital-label">Hydration Status</span>
+              </div>
+
+            </div>
+
+            <div class="frame-bottom-flange">
+              <span class="flange-line"></span>
+              <span class="flange-notch"></span>
+              <span class="flange-line"></span>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- 2. 4 HOLOGRAPHIC CIRCLES (NAVIGATION BUTTONS)
+             HOW TO USE:
+             - Each circle is a button with a link to another page.
+             - To link to a page, change href="#" to href="your-page.html"
+             - Whichever page you are currently on, add the class "active" to that circle
+               and it will automatically appear DARKER than the other buttons!
+        -->
+        <nav class="dials-column" id="dials-column" aria-label="Page Navigation Circles">
+          
+          <!-- CIRCLE 1: Physiological Vitals (ACTIVE & DARKER on this page) -->
+          <a href="#" class="holo-dial dial-1 active" id="dial-1" data-page="vitals" title="Physiological Vitals (Current Page - Darker)">
+            <svg viewBox="0 0 80 80" class="dial-svg">
+              <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+              <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+              <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+              <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+              <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+              <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+              <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+              <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+            </svg>
+            <span class="dial-tooltip">Physiological Vitals</span>
+          </a>
+
+          <!-- CIRCLE 2: STATS -->
+          <a href="profile.html" class="holo-dial dial-2" id="dial-2" data-page="stats" title="Click to view STATS page">
+            <svg viewBox="0 0 80 80" class="dial-svg">
+              <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+              <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+              <circle cx="40" cy="40" r="18" class="ring-inner-ticks" />
+              <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+              <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+              <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+              <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+              <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+            </svg>
+            <span class="dial-tooltip">STATS</span>
+          </a>
+
+          <!-- CIRCLE 3: ALERTS -->
+          <a href="alerts.html" class="holo-dial dial-3" id="dial-3" data-page="alerts" title="Click to view ALERTS page">
+            <svg viewBox="0 0 80 80" class="dial-svg">
+              <circle cx="40" cy="40" r="34" class="ring-outer-dashed" />
+              <circle cx="40" cy="40" r="26" class="ring-middle-arc" />
+              <circle cx="40" cy="40" r="18" class="ring-inner-dashed reverse" />
+              <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+              <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+              <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+              <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+              <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+            </svg>
+            <span class="dial-tooltip">ALERTS</span>
+          </a>
+
+          <!-- CIRCLE 4: History log and calendar -->
+          <a href="calander.html" class="holo-dial dial-4" id="dial-4" data-page="history" title="Click to view History Log and Calendar page">
+            <svg viewBox="0 0 80 80" class="dial-svg">
+              <circle cx="40" cy="40" r="34" class="ring-outer-dashed reverse" />
+              <circle cx="40" cy="40" r="26" class="ring-middle-arc reverse" />
+              <circle cx="40" cy="40" r="18" class="ring-inner-dashed" />
+              <circle cx="40" cy="40" r="7" class="ring-core-glow" />
+              <line x1="40" y1="5" x2="40" y2="13" class="dial-crosshair" />
+              <line x1="40" y1="67" x2="40" y2="75" class="dial-crosshair" />
+              <line x1="5" y1="40" x2="13" y2="40" class="dial-crosshair" />
+              <line x1="67" y1="40" x2="75" y2="40" class="dial-crosshair" />
+            </svg>
+            <span class="dial-tooltip">History & Calendar</span>
+          </a>
+
+        </nav>
+
+      </div>
+
+      <!-- ===================================================================
+           [SECTION 4]: CENTER ASTRONAUT & TELEMETRY HUD DATA DISPLAY
+           Appears dynamically when clicking any bio marker!
+           =================================================================== -->
+      <section class="astronaut-center-stage" id="section-astronaut">
+        
+        <!-- Top Emergency Alert Reticle (Visible in Red Danger State) -->
+        <div class="alarm-reticle" id="alarmReticle" aria-hidden="true">
+          <svg viewBox="0 0 80 80" class="alarm-svg">
+            <circle cx="40" cy="40" r="34" class="alarm-ring-outer" />
+            <circle cx="40" cy="40" r="26" class="alarm-ring-inner" />
+            <polygon points="40,24 54,50 26,50" class="alarm-triangle" />
+            <text x="40" y="47" text-anchor="middle" class="alarm-exclamation">!</text>
+          </svg>
+        </div>
+
+        <!-- FLOATING TELEMETRY READING BOX -->
+        <div class="floating-reading-box theme-green" id="floatingReadingBox">
+          <div class="reading-frame">
+            <div class="reading-digits" id="readingDigits">
+              <span class="val-num">56</span>
+            </div>
+            <span class="reading-unit" id="readingUnit">bpm</span>
+          </div>
+
+          <!-- Bottom-Left Decorative Hazard Slashes /// -->
+          <div class="reading-hazard-slashes">
+            <span class="slash"></span>
+            <span class="slash"></span>
+            <span class="slash"></span>
+          </div>
+        </div>
+
+        <!-- Leader Line from Reading Box to Astronaut Chest Sensor -->
+        <div class="telemetry-leader-line-container">
+          <svg class="leader-line-svg" id="leaderLineSvg" viewBox="0 0 300 200" preserveAspectRatio="none">
+            <path id="leaderPath" class="leader-path theme-green" d="M 0,35 L 140,35 L 210,85 L 240,85" />
+            <circle id="leaderDot" class="leader-dot theme-green" cx="240" cy="85" r="4.5" />
+          </svg>
+        </div>
+
+        <!-- EVA Astronaut Spacesuit Image Viewport -->
+        <div class="astronaut-viewport">
+          <img 
+            id="astronaut-img" 
+            class="astronaut-img" 
+            src="Health_app__3_-removebg-preview (1).png" 
+            alt="NASA EVA Spacesuit - Expedition 74"
+            onerror="this.onerror=null; this.src='Health_app__3_-removebg-preview (1).png'"
+          >
+          <!-- Chest sensor dot where line connects -->
+          <div class="suit-sensor-target" id="suitSensorTarget"></div>
+        </div>
+
+        <!-- LOWER PROBABLE CAUSE & ACTION CARD -->
+        <div class="cause-action-card theme-green" id="causeActionCard">
+          <div class="cause-card-frame">
+            <div class="cause-badge" id="causeBadge">ALL NORMAL: NOMINAL SINUS RHYTHM</div>
+            <div class="cause-row">
+              <span class="cause-label" id="causeLabel">PROBABLE CAUSE:</span>
+              <p class="cause-text" id="causeText">Resting cardiac function within optimal athletic baseline.</p>
+            </div>
+            <div class="action-row">
+              <span class="action-label" id="actionLabel">ACTION:</span>
+              <p class="action-text" id="actionText">No intervention required; continue routine EVA schedule.</p>
+            </div>
+
+            <!-- Corner slash accents -->
+            <div class="card-corner-slashes">
+              <span class="slash"></span>
+              <span class="slash"></span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           [SECTION 5]: RIGHT TELEMETRY & EMERGENCY SURGEON LOG PANEL
+           =================================================================== -->
+      <aside class="right-telemetry-stage" id="section-telemetry-panel">
+        
+        <div class="telemetry-card theme-green" id="telemetryCard">
+          
+          <!-- Chamfered Corners -->
+          <span class="corner-bracket top-left"></span>
+          <span class="corner-bracket top-right"></span>
+          <span class="corner-bracket bottom-left"></span>
+          <span class="corner-bracket bottom-right"></span>
+
+          <!-- Top-Right Cyber Slashes // -->
+          <div class="panel-header-slashes">
+            <span class="slash"></span>
+            <span class="slash"></span>
+          </div>
+
+          <!-- Panel Title -->
+          <h3 class="telemetry-card-title" id="telemetryCardTitle">SUIT & ENV TELEMETRY</h3>
+
+          <!-- Bullet Points List -->
+          <ul class="telemetry-data-list" id="telemetryDataList">
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">EVA SUIT PRESSURE:</span>
+                <span class="param-val">4.3 psi (NOMINAL)</span>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">CABIN / SUIT CO2:</span>
+                <span class="param-val">0.3 mmHg (NOMINAL)</span>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">COOLING LOOP TEMP:</span>
+                <span class="param-val">18.2 °C</span>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">O2 RESERVE:</span>
+                <span class="param-val">96% (07h 15m)</span>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">WORKLOAD INDEX:</span>
+                <span class="param-val">NOMINAL (Zone 1)</span>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">&bull;</span>
+              <div class="param-group">
+                <span class="param-name">MET:</span>
+                <span class="param-val">042d 14h 22m</span>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Vitals Quick Toast -->
+  <div class="vitals-toast" id="vitals-toast" aria-hidden="true">
+    <span class="toast-indicator"></span>
+    <div class="toast-info">
+      <strong class="toast-title" id="toast-title">Heart Rate</strong>
+      <span class="toast-val" id="toast-val">56 BPM &bull; ALL NORMAL</span>
+    </div>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="nasa.js"></script>
+</body>
+</html>

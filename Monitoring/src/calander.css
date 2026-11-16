@@ -1,0 +1,712 @@
+/* ==========================================================================
+   NASA EVA BIOTELEMETRY HUD - MISSION CALENDAR & HISTORY LOG
+   STYLESHEET (1:1 Match with the NASA Calendar Dashboard)
+   ========================================================================== */
+
+:root {
+  /* Cyan Sci-Fi Palette */
+  --hud-cyan: #00e5ff;
+  --hud-cyan-bright: #33eeff;
+  --hud-cyan-dim: #008ba3;
+  --hud-cyan-glow: rgba(0, 229, 255, 0.55);
+  --hud-cyan-faint: rgba(0, 229, 255, 0.12);
+  
+  /* Backgrounds & Glass */
+  --hud-bg-space: #030814;
+  --hud-bg-glass: rgba(2, 20, 36, 0.78);
+  --hud-bg-panel: rgba(2, 16, 30, 0.84);
+  --hud-bg-calendar: rgba(2, 14, 26, 0.82);
+  
+  /* Typography */
+  --font-hud-square: 'Chakra Petch', sans-serif;
+  --font-hud-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-tech-clean: 'Rajdhani', sans-serif;
+  --font-telemetry: 'Share Tech Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hud-bg-space);
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+}
+
+/* ==========================================================================
+   [SECTION 1]: BACKGROUND & ATMOSPHERE
+   ========================================================================== */
+.space-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 75% 40%, rgba(14, 52, 92, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 25% 65%, rgba(6, 32, 64, 0.55) 0%, transparent 70%),
+    url('Health app.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020712;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.space-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(1, 6, 16, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   MAIN HUD CONTAINER
+   ========================================================================== */
+.hud-container {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  padding: 2.2vh 3.2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   [SECTION 2]: TOP HEADER
+   ========================================================================== */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 30;
+  position: relative;
+}
+
+.crew-badge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-ring {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  animation: rotateCW 30s linear infinite;
+}
+
+.reticle-ring .ring-track { fill: none; stroke: rgba(0, 229, 255, 0.25); stroke-width: 1.2; }
+.reticle-ring .ring-glow { fill: none; stroke: var(--hud-cyan); stroke-width: 2.2; stroke-dasharray: 45 150; filter: drop-shadow(0 0 6px var(--hud-cyan)); }
+.reticle-ring .ring-dashes { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 1.5; stroke-dasharray: 3 9; }
+.reticle-ring .ring-ticks { fill: none; stroke: rgba(0, 229, 255, 0.5); stroke-width: 1.8; stroke-dasharray: 1 15; }
+
+.avatar-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--hud-cyan);
+  box-shadow: 0 0 15px var(--hud-cyan-glow), inset 0 0 8px rgba(0, 229, 255, 0.4);
+  background: #021220;
+}
+
+.avatar-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crew-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crew-name {
+  font-family: var(--font-hud-square);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  line-height: 1.05;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+.crew-role,
+.crew-mission {
+  font-family: var(--font-hud-square);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #c2e2f2;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+/* Week 3 Glowing Indicator Badge */
+.week-indicator-badge {
+  background: rgba(2, 32, 60, 0.65);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.35), inset 0 0 12px rgba(0, 229, 255, 0.2);
+  padding: 4px 26px;
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.week-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px var(--hud-cyan-glow), 0 0 25px rgba(0, 229, 255, 0.5);
+}
+
+.nasa-branding {
+  display: flex;
+  align-items: center;
+}
+
+.nasa-logo-svg {
+  width: 155px;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 15px rgba(0, 229, 255, 0.35));
+}
+
+/* ==========================================================================
+   MAIN CALENDAR STAGE LAYOUT
+   ========================================================================== */
+.calendar-stage {
+  display: grid;
+  grid-template-columns: 295px 56px 1fr;
+  align-items: center;
+  height: calc(100vh - 110px);
+  position: relative;
+  gap: 16px;
+  z-index: 20;
+}
+
+/* ==========================================================================
+   [SECTION 3]: LEFT PANEL - DAILY LOG DETAILS
+   ========================================================================== */
+.log-left-panel {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-height: 540px;
+}
+
+.cyber-frame {
+  position: relative;
+  background: var(--hud-bg-glass);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.log-frame {
+  width: 100%;
+  padding: 20px 16px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 490px;
+  clip-path: polygon(
+    0 16px, 16px 0, 
+    calc(100% - 16px) 0, 100% 16px, 
+    100% calc(100% - 16px), calc(100% - 16px) 100%, 
+    16px 100%, 0 calc(100% - 16px)
+  );
+}
+
+/* Corner Brackets */
+.corner-bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+.corner-bracket.top-left { top: -2px; left: -2px; border-top: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.top-right { top: -2px; right: -2px; border-top: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-left { bottom: -2px; left: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-right { bottom: -2px; right: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+
+/* Left & Right Edge Cyber Notches & 3 Dots */
+.frame-edge-deco {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+  pointer-events: none;
+}
+.frame-edge-deco.edge-left { left: -6px; }
+.frame-edge-deco.edge-right { right: -6px; }
+
+.frame-edge-deco .deco-tab {
+  width: 5px; height: 12px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.frame-edge-deco .deco-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frame-edge-deco .deco-dots .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 5px var(--hud-cyan-bright);
+}
+
+.log-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.log-date-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+.log-date-title sup {
+  font-size: 0.8rem;
+}
+
+/* Daily Timed Log Entries */
+.log-entries-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.log-entry-item {
+  background: rgba(3, 24, 44, 0.6);
+  border-left: 3px solid var(--hud-cyan);
+  padding: 8px 10px;
+  border-radius: 0 4px 4px 0;
+  transition: all 0.2s ease;
+}
+
+.log-entry-item:hover {
+  background: rgba(0, 229, 255, 0.14);
+  transform: translateX(3px);
+}
+
+.log-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #eaf5fc;
+}
+
+.log-time {
+  font-family: var(--font-telemetry);
+  font-weight: 700;
+  color: var(--hud-cyan-bright);
+  letter-spacing: 0.5px;
+}
+
+.frame-bottom-flange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  opacity: 0.75;
+}
+.flange-line { flex: 1; height: 1.5px; background: var(--hud-cyan); }
+.flange-notch { width: 12px; height: 4px; background: var(--hud-cyan); transform: skewX(-35deg); }
+
+/* ==========================================================================
+   [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+   NOTICE: CIRCLE 4 IS ACTIVE & DARKER (CALENDAR PAGE)
+   ========================================================================== */
+.dials-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px;
+  z-index: 15;
+  width: 52px;
+  margin: 0 auto;
+}
+
+.holo-dial {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+/* Inactive Circles: Glowing cyan */
+.holo-dial:not(.active) {
+  background: transparent;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+}
+
+.holo-dial:not(.active):hover {
+  transform: scale(1.16);
+  filter: drop-shadow(0 0 12px var(--hud-cyan-bright)) brightness(1.25);
+}
+
+/* ACTIVE CIRCLE: CIRCLE 4 IS VISIBLY DARKER ON THIS CALENDAR PAGE! */
+.holo-dial.active {
+  background: radial-gradient(circle at center, #01060e 50%, #031422 100%);
+  border: 1.8px solid #004d5c;
+  box-shadow: 
+    inset 0 0 16px rgba(0, 0, 0, 0.95),
+    inset 0 0 6px #010810,
+    0 0 8px rgba(0, 160, 200, 0.25);
+  transform: scale(0.96);
+  filter: brightness(0.62) contrast(1.15);
+}
+
+.holo-dial.active .ring-outer-dashed { stroke: #005060; stroke-width: 1.4; }
+.holo-dial.active .ring-middle-arc { stroke: #006b80; stroke-width: 1.8; filter: none; }
+.holo-dial.active .ring-inner-dashed { stroke: #003e4d; }
+.holo-dial.active .ring-core-glow { fill: #01050a; stroke: #003542; }
+.holo-dial.active .dial-crosshair { stroke: #004552; }
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ring-outer-dashed { fill: none; stroke: var(--hud-cyan); stroke-width: 1.6; stroke-dasharray: 14 7 4 7; animation: rotateCW 12s linear infinite; transform-origin: center; }
+.ring-outer-dashed.reverse { animation: rotateCCW 10s linear infinite; }
+.ring-middle-arc { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 2.2; stroke-dasharray: 45 70; animation: rotateCCW 8s linear infinite; transform-origin: center; }
+.ring-middle-arc.reverse { animation: rotateCW 9s linear infinite; }
+.ring-inner-dashed { fill: none; stroke: rgba(0, 229, 255, 0.7); stroke-width: 1.5; stroke-dasharray: 6 6; animation: rotateCW 6s linear infinite; transform-origin: center; }
+.ring-inner-ticks { fill: none; stroke: var(--hud-cyan); stroke-width: 1.8; stroke-dasharray: 2 6; }
+.ring-core-glow { fill: rgba(0, 229, 255, 0.4); stroke: var(--hud-cyan-bright); stroke-width: 1.5; }
+.dial-crosshair { stroke: var(--hud-cyan); stroke-width: 1.5; stroke-linecap: round; }
+
+.dial-tooltip {
+  position: absolute;
+  left: 58px;
+  background: rgba(2, 20, 36, 0.95);
+  border: 1px solid var(--hud-cyan);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-hud-square);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+
+.holo-dial:hover .dial-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   [SECTION 5]: RIGHT MAIN PANEL - CALENDAR GRID
+   ========================================================================== */
+.calendar-main-container {
+  height: 100%;
+  max-height: 560px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.calendar-cyber-frame {
+  width: 100%;
+  height: 100%;
+  background: var(--hud-bg-calendar);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28), inset 0 0 20px rgba(0, 229, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 4px;
+}
+
+/* Month & Year Bar */
+.month-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--hud-cyan);
+  margin-bottom: 8px;
+}
+
+.month-name,
+.year-number {
+  font-family: var(--font-hud-square);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+.calendar-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Days of Week Header */
+.cal-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 6px 0;
+  border-bottom: 1px dotted rgba(0, 229, 255, 0.5);
+  margin-bottom: 4px;
+}
+
+.day-col-name {
+  font-family: var(--font-hud-square);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+/* Calendar Days 7x5 Grid */
+.cal-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  flex: 1;
+  gap: 2px;
+}
+
+/* Individual Day Cell */
+.cal-day-cell {
+  position: relative;
+  border: 1px dotted rgba(0, 229, 255, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 60px;
+}
+
+.cal-day-cell:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--hud-cyan-bright);
+}
+
+.cal-day-cell .day-num {
+  font-family: var(--font-hud-square);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.cal-day-cell.dimmed {
+  opacity: 0.32;
+}
+
+/* ACTIVE SELECTED DAY (DAY 15 IN IMAGE) */
+.cal-day-cell.active-day {
+  background: rgba(0, 180, 215, 0.38);
+  border: 1.8px solid var(--hud-cyan-bright);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.6), inset 0 0 12px rgba(0, 229, 255, 0.3);
+}
+
+.cal-day-cell.active-day .day-num {
+  color: #ffffff;
+  text-shadow: 0 0 8px #ffffff;
+}
+
+/* Activity Icons in Calendar */
+.day-icon {
+  width: 28px;
+  height: 28px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+  color: var(--hud-cyan);
+}
+
+/* Custom Vector Icons matching the Image */
+.icon-workout {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='5' r='2'/%3E%3Cpath d='M9 20l3-6 3 6'/%3E%3Cpath d='M6 10l6-2 6 2'/%3E%3Cpath d='M12 8v6'/%3E%3C/svg%3E");
+}
+
+.icon-rover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 14h14v4H5z'/%3E%3Ccircle cx='6' cy='18' r='2'/%3E%3Ccircle cx='18' cy='18' r='2'/%3E%3Ccircle cx='12' cy='18' r='2'/%3E%3Cpath d='M10 14V8l4-2'/%3E%3Ccircle cx='14' cy='6' r='1' fill='%2300e5ff'/%3E%3C/svg%3E");
+}
+
+.icon-box {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpolyline points='3.27 6.96 12 12.01 20.73 6.96'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12'/%3E%3C/svg%3E");
+}
+
+.icon-doc {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3Cpolyline points='10 9 9 9 8 9'/%3E%3C/svg%3E");
+}
+
+.icon-robotarm {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='18' r='3'/%3E%3Cpath d='M8.5 16L14 10l5 3'/%3E%3Ccircle cx='14' cy='10' r='2'/%3E%3Cpath d='M18 11l3-1M19 14l2 1'/%3E%3C/svg%3E");
+}
+
+.icon-monitor {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='14' rx='2'/%3E%3Cline x1='8' y1='21' x2='16' y2='21'/%3E%3Cline x1='12' y1='17' x2='12' y2='21'/%3E%3Cpolyline points='6 10 9 10 11 7 13 13 15 10 18 10'/%3E%3C/svg%3E");
+}
+
+.icon-gear {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z'/%3E%3C/svg%3E");
+}
+
+.icon-cleaning {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11h10l-1.5 9h-7z'/%3E%3Cline x1='19' y1='3' x2='15' y2='20'/%3E%3Cpath d='M13 17l4 3'/%3E%3C/svg%3E");
+}
+
+.icon-microscope {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18h12'/%3E%3Cpath d='M3 22h18'/%3E%3Cpath d='M14 22a7 7 0 1 0-7-7'/%3E%3Cpath d='M9 14h6'/%3E%3Cpath d='M12 6V3'/%3E%3Crect x='10' y='6' width='4' height='6' rx='1'/%3E%3C/svg%3E");
+}
+
+.icon-code {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='14' rx='2'/%3E%3Cpath d='M8 21h8'/%3E%3Cpath d='M12 17v4'/%3E%3Cpolyline points='7 8 5 10 7 12'/%3E%3Cpolyline points='17 8 19 10 17 12'/%3E%3Cline x1='13' y1='7' x2='11' y2='13'/%3E%3C/svg%3E");
+}
+
+.icon-astronaut {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3Crect x='7' y='11' width='10' height='8' rx='2'/%3E%3Cline x1='9' y1='19' x2='9' y2='23'/%3E%3Cline x1='15' y1='19' x2='15' y2='23'/%3E%3Cline x1='7' y1='13' x2='4' y2='16'/%3E%3Cline x1='17' y1='13' x2='20' y2='16'/%3E%3C/svg%3E");
+}
+
+.icon-pipes {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7h8v10h10'/%3E%3Ccircle cx='11' cy='12' r='2' fill='%2300e5ff'/%3E%3Cpath d='M11 16a2 2 0 0 0 2 2'/%3E%3C/svg%3E");
+}
+
+.icon-video {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='4' width='20' height='15' rx='2'/%3E%3Cpolygon points='10,9 15,12 10,15' fill='%2300e5ff'/%3E%3Cline x1='6' y1='21' x2='18' y2='21'/%3E%3C/svg%3E");
+}
+
+/* Interactive Toast */
+.vitals-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(2, 24, 44, 0.94);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 20px var(--hud-cyan-glow);
+  padding: 8px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vitals-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan-bright);
+}
+
+.toast-title {
+  display: block;
+  font-size: 0.78rem;
+  color: #7adcf5;
+  text-transform: uppercase;
+}
+
+.toast-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Keyframes */
+@keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+/* Responsive Adjustments */
+@media (max-width: 1366px) {
+  .calendar-stage {
+    grid-template-columns: 275px 48px 1fr;
+    gap: 12px;
+  }
+  .cal-day-cell {
+    padding: 4px 6px;
+    min-height: 52px;
+  }
+  .cal-day-cell .day-num {
+    font-size: 1.15rem;
+  }
+  .day-icon {
+    width: 24px;
+    height: 24px;
+  }
+}

@@ -1,0 +1,903 @@
+/* ==========================================================================
+   NASA EVA BIOTELEMETRY HUD - ALERTS & DIAGNOSIS
+   STYLESHEET (1:1 Match with the NASA Alerts Dashboard)
+   ========================================================================== */
+
+:root {
+  /* Cyan Sci-Fi Palette */
+  --hud-cyan: #00e5ff;
+  --hud-cyan-bright: #33eeff;
+  --hud-cyan-dim: #008ba3;
+  --hud-cyan-glow: rgba(0, 229, 255, 0.55);
+  
+  /* Alert Severities */
+  --alert-red: #ff1a2a;
+  --alert-red-bright: #ff3848;
+  --alert-red-glow: rgba(255, 26, 42, 0.7);
+  
+  --alert-yellow: #f8c000;
+  --alert-yellow-bright: #ffd700;
+  --alert-yellow-glow: rgba(248, 192, 0, 0.65);
+  
+  --alert-green: #00ff88;
+  --alert-green-bright: #33ffa3;
+  --alert-green-glow: rgba(0, 255, 136, 0.6);
+  
+  /* Backgrounds */
+  --hud-bg-space: #030814;
+  --hud-bg-glass: rgba(2, 20, 36, 0.78);
+  --hud-bg-panel: rgba(2, 16, 30, 0.84);
+  
+  /* Typography */
+  --font-hud-square: 'Chakra Petch', sans-serif;
+  --font-hud-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-tech-clean: 'Rajdhani', sans-serif;
+  --font-telemetry: 'Share Tech Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hud-bg-space);
+  color: #ffffff;
+  font-family: var(--font-hud-square);
+}
+
+/* ==========================================================================
+   [SECTION 1]: BACKGROUND & ATMOSPHERE
+   ========================================================================== */
+.space-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 75% 40%, rgba(14, 52, 92, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 25% 65%, rgba(6, 32, 64, 0.55) 0%, transparent 70%),
+    url('Health app.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #020712;
+}
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.space-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(1, 6, 16, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   MAIN HUD CONTAINER
+   ========================================================================== */
+.hud-container {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  padding: 2.2vh 3.2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   [SECTION 2]: TOP HEADER
+   ========================================================================== */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 30;
+}
+
+.crew-badge {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-ring {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  animation: rotateCW 30s linear infinite;
+}
+
+.reticle-ring .ring-track { fill: none; stroke: rgba(0, 229, 255, 0.25); stroke-width: 1.2; }
+.reticle-ring .ring-glow { fill: none; stroke: var(--hud-cyan); stroke-width: 2.2; stroke-dasharray: 45 150; filter: drop-shadow(0 0 6px var(--hud-cyan)); }
+.reticle-ring .ring-dashes { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 1.5; stroke-dasharray: 3 9; }
+.reticle-ring .ring-ticks { fill: none; stroke: rgba(0, 229, 255, 0.5); stroke-width: 1.8; stroke-dasharray: 1 15; }
+
+.avatar-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--hud-cyan);
+  box-shadow: 0 0 15px var(--hud-cyan-glow), inset 0 0 8px rgba(0, 229, 255, 0.4);
+  background: #021220;
+}
+
+.avatar-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.crew-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crew-name {
+  font-family: var(--font-hud-square);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  line-height: 1.05;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.65);
+}
+
+.crew-role,
+.crew-mission {
+  font-family: var(--font-hud-square);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #c2e2f2;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.nasa-branding {
+  display: flex;
+  align-items: center;
+}
+
+.nasa-logo-svg {
+  width: 155px;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 15px rgba(0, 229, 255, 0.35));
+}
+
+/* ==========================================================================
+   MAIN ALERTS STAGE LAYOUT
+   ========================================================================== */
+.alerts-stage {
+  display: grid;
+  grid-template-columns: 295px 56px 1fr;
+  align-items: center;
+  height: calc(100vh - 110px);
+  position: relative;
+  gap: 16px;
+  z-index: 20;
+}
+
+/* ==========================================================================
+   [SECTION 3]: LEFT PANEL - ALERTS CATEGORIES GRID (8 CARDS)
+   ========================================================================== */
+.alerts-left-panel {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  max-height: 540px;
+}
+
+.cyber-frame {
+  position: relative;
+  background: var(--hud-bg-glass);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.3), inset 0 0 15px rgba(0, 229, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.alerts-frame {
+  width: 100%;
+  padding: 16px 14px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 490px;
+  clip-path: polygon(
+    0 16px, 16px 0, 
+    calc(100% - 16px) 0, 100% 16px, 
+    100% calc(100% - 16px), calc(100% - 16px) 100%, 
+    16px 100%, 0 calc(100% - 16px)
+  );
+}
+
+/* Corner Brackets */
+.corner-bracket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+.corner-bracket.top-left { top: -2px; left: -2px; border-top: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.top-right { top: -2px; right: -2px; border-top: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-left { bottom: -2px; left: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-left: 3px solid var(--hud-cyan-bright); }
+.corner-bracket.bottom-right { bottom: -2px; right: -2px; border-bottom: 3px solid var(--hud-cyan-bright); border-right: 3px solid var(--hud-cyan-bright); }
+
+/* Left & Right Edge Cyber Notches & 3 Dots */
+.frame-edge-deco {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+  pointer-events: none;
+}
+.frame-edge-deco.edge-left { left: -6px; }
+.frame-edge-deco.edge-right { right: -6px; }
+
+.frame-edge-deco .deco-tab {
+  width: 5px; height: 12px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 6px var(--hud-cyan);
+}
+
+.frame-edge-deco .deco-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frame-edge-deco .deco-dots .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 5px var(--hud-cyan-bright);
+}
+
+.alerts-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.alerts-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--hud-cyan-glow);
+}
+
+/* 2x4 Grid of Alert Cards */
+.alerts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Individual Alert Card */
+.alert-card {
+  background: rgba(3, 24, 42, 0.75);
+  border-radius: 3px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  min-height: 82px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  outline: none;
+}
+
+.alert-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+/* Critical Card (Red) */
+.alert-card.card-critical {
+  border: 1.5px solid var(--alert-red);
+  box-shadow: 0 0 10px rgba(255, 26, 42, 0.35);
+}
+
+.alert-card.card-critical.active,
+.alert-card.card-critical:hover {
+  box-shadow: 0 0 18px var(--alert-red-glow), inset 0 0 12px rgba(255, 26, 42, 0.3);
+  background: rgba(36, 6, 12, 0.85);
+}
+
+/* Urgent Card (Yellow) */
+.alert-card.card-urgent {
+  border: 1.5px solid var(--alert-yellow);
+  box-shadow: 0 0 8px rgba(248, 192, 0, 0.25);
+}
+
+.alert-card.card-urgent.active,
+.alert-card.card-urgent:hover {
+  box-shadow: 0 0 16px var(--alert-yellow-glow), inset 0 0 10px rgba(248, 192, 0, 0.25);
+  background: rgba(30, 24, 4, 0.85);
+}
+
+/* Normal Card (Green) */
+.alert-card.card-normal {
+  border: 1.5px solid var(--alert-green);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.25);
+}
+
+.alert-card.card-normal.active,
+.alert-card.card-normal:hover {
+  box-shadow: 0 0 16px var(--alert-green-glow), inset 0 0 10px rgba(0, 255, 136, 0.2);
+  background: rgba(3, 28, 18, 0.85);
+}
+
+/* Alert Card Title */
+.alert-card-title {
+  font-family: var(--font-hud-square);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Status Badges */
+.alert-status-badge {
+  font-family: var(--font-hud-square);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  margin: 4px 0;
+}
+
+.badge-critical {
+  background: var(--alert-red);
+  color: #ffffff;
+  box-shadow: 0 0 6px var(--alert-red);
+}
+
+.badge-urgent {
+  background: #d8a400;
+  color: #030a10;
+  font-weight: 900;
+}
+
+.badge-normal {
+  background: #00b864;
+  color: #030a10;
+  font-weight: 900;
+}
+
+.alert-card-score {
+  font-family: var(--font-telemetry);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #c0eaff;
+  letter-spacing: 0.5px;
+}
+
+.frame-bottom-flange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  opacity: 0.75;
+}
+.flange-line { flex: 1; height: 1.5px; background: var(--hud-cyan); }
+.flange-notch { width: 12px; height: 4px; background: var(--hud-cyan); transform: skewX(-35deg); }
+
+/* ==========================================================================
+   [SECTION 4]: 4 HOLOGRAPHIC CIRCLES (PAGE NAVIGATION BUTTONS)
+   NOTICE: CIRCLE 3 IS ACTIVE & DARKER (ALERTS PAGE)
+   ========================================================================== */
+.dials-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px;
+  z-index: 15;
+  width: 52px;
+  margin: 0 auto;
+}
+
+.holo-dial {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+/* Inactive Circles: Glowing cyan */
+.holo-dial:not(.active) {
+  background: transparent;
+  filter: drop-shadow(0 0 6px var(--hud-cyan));
+}
+
+.holo-dial:not(.active):hover {
+  transform: scale(1.16);
+  filter: drop-shadow(0 0 12px var(--hud-cyan-bright)) brightness(1.25);
+}
+
+/* ACTIVE CIRCLE: CIRCLE 3 IS VISIBLY DARKER ON THIS ALERTS PAGE! */
+.holo-dial.active {
+  background: radial-gradient(circle at center, #01060e 50%, #031422 100%);
+  border: 1.8px solid #004d5c;
+  box-shadow: 
+    inset 0 0 16px rgba(0, 0, 0, 0.95),
+    inset 0 0 6px #010810,
+    0 0 8px rgba(0, 160, 200, 0.25);
+  transform: scale(0.96);
+  filter: brightness(0.62) contrast(1.15);
+}
+
+.holo-dial.active .ring-outer-dashed { stroke: #005060; stroke-width: 1.4; }
+.holo-dial.active .ring-middle-arc { stroke: #006b80; stroke-width: 1.8; filter: none; }
+.holo-dial.active .ring-inner-dashed { stroke: #003e4d; }
+.holo-dial.active .ring-core-glow { fill: #01050a; stroke: #003542; }
+.holo-dial.active .dial-crosshair { stroke: #004552; }
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ring-outer-dashed { fill: none; stroke: var(--hud-cyan); stroke-width: 1.6; stroke-dasharray: 14 7 4 7; animation: rotateCW 12s linear infinite; transform-origin: center; }
+.ring-outer-dashed.reverse { animation: rotateCCW 10s linear infinite; }
+.ring-middle-arc { fill: none; stroke: var(--hud-cyan-bright); stroke-width: 2.2; stroke-dasharray: 45 70; animation: rotateCCW 8s linear infinite; transform-origin: center; }
+.ring-middle-arc.reverse { animation: rotateCW 9s linear infinite; }
+.ring-inner-dashed { fill: none; stroke: rgba(0, 229, 255, 0.7); stroke-width: 1.5; stroke-dasharray: 6 6; animation: rotateCW 6s linear infinite; transform-origin: center; }
+.ring-inner-ticks { fill: none; stroke: var(--hud-cyan); stroke-width: 1.8; stroke-dasharray: 2 6; }
+.ring-core-glow { fill: rgba(0, 229, 255, 0.4); stroke: var(--hud-cyan-bright); stroke-width: 1.5; }
+.dial-crosshair { stroke: var(--hud-cyan); stroke-width: 1.5; stroke-linecap: round; }
+
+.dial-tooltip {
+  position: absolute;
+  left: 58px;
+  background: rgba(2, 20, 36, 0.95);
+  border: 1px solid var(--hud-cyan);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-hud-square);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+
+.holo-dial:hover .dial-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   [SECTION 5]: RIGHT MAIN PANEL - DIAGNOSIS & SYMPTOMS SPLIT VIEW
+   ========================================================================== */
+.alerts-main-container {
+  height: 100%;
+  max-height: 560px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.alerts-cyber-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--hud-bg-panel);
+  border: 1.8px solid var(--hud-cyan);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28), inset 0 0 20px rgba(0, 229, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 20px 24px;
+  border-radius: 3px;
+  clip-path: polygon(
+    0 14px, 14px 0, 
+    calc(100% - 14px) 0, 100% 14px, 
+    100% calc(100% - 24px), calc(100% - 24px) 100%, 
+    14px 100%, 0 calc(100% - 14px)
+  );
+}
+
+/* Stepped Top-Left & Bottom-Right Corner Decos */
+.frame-corner-deco {
+  position: absolute;
+  pointer-events: none;
+}
+
+.frame-corner-deco.top-left {
+  top: -2px; left: -2px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.frame-corner-deco.top-left .deco-bracket {
+  width: 24px; height: 24px;
+  border-top: 3.5px solid var(--hud-cyan-bright);
+  border-left: 3.5px solid var(--hud-cyan-bright);
+}
+
+.frame-corner-deco.bottom-right {
+  bottom: 0px; right: -2px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.frame-corner-deco.bottom-right .corner-slashes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.frame-corner-deco.bottom-right .slash {
+  width: 12px; height: 3px;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 4px var(--hud-cyan);
+  transform: skewX(-35deg);
+}
+
+.frame-corner-deco.bottom-right .deco-bracket.double {
+  width: 28px; height: 28px;
+  border-bottom: 3.5px solid var(--hud-cyan-bright);
+  border-right: 3.5px solid var(--hud-cyan-bright);
+}
+
+/* Split Layout: DIAGNOSIS (Left) vs SYMPTOMS (Right) */
+.diagnosis-symptoms-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+}
+
+.diag-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.symptoms-column {
+  flex: 1.05;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vertical Dividing Bus Line */
+.vertical-panel-divider {
+  width: 1px;
+  background: rgba(0, 229, 255, 0.45);
+  position: relative;
+  margin: 10px 0;
+}
+
+.v-line-top-bracket {
+  position: absolute;
+  top: -6px; left: -5px;
+  width: 11px; height: 5px;
+  border-top: 2px solid var(--hud-cyan);
+}
+
+.v-line-bottom-bracket {
+  position: absolute;
+  bottom: -6px; left: -5px;
+  width: 11px; height: 5px;
+  border-bottom: 2px solid var(--hud-cyan);
+}
+
+/* Column Header */
+.column-header {
+  margin-bottom: 16px;
+}
+
+.col-title {
+  font-family: var(--font-hud-square);
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+  margin-bottom: 6px;
+}
+
+/* Glowing Divider Lines with Circular Nodes */
+.header-divider,
+.sub-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 6px 0 12px 0;
+}
+
+.line-bar {
+  flex: 1;
+  height: 1.8px;
+}
+
+.line-node {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Red Line */
+.line-red .line-bar { background: var(--alert-red); box-shadow: 0 0 8px var(--alert-red); }
+.line-red .line-node { background: var(--alert-red); box-shadow: 0 0 8px var(--alert-red); }
+
+/* Yellow Line */
+.line-yellow .line-bar { background: var(--alert-yellow); box-shadow: 0 0 8px var(--alert-yellow); }
+.line-yellow .line-node { background: var(--alert-yellow); box-shadow: 0 0 8px var(--alert-yellow); }
+
+/* DIAGNOSIS Body Styling */
+.diag-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.diag-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.status-badge {
+  font-family: var(--font-hud-square);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 12px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.hazard-icon.red {
+  color: var(--alert-red);
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 6px var(--alert-red));
+  animation: pulseHazard 1.2s infinite alternate;
+}
+
+.diag-detail-text {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.diag-code {
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.diag-desc {
+  color: #d8f3ff;
+}
+
+/* Urgent Diagnoses List */
+.urgent-diag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.urgent-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.urgent-item .item-name {
+  font-family: var(--font-hud-square);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.urgent-item .item-data {
+  font-family: var(--font-telemetry);
+  font-size: 0.88rem;
+  color: #e2f5ff;
+  line-height: 1.3;
+}
+
+/* SYMPTOMS Body Styling */
+.symptoms-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.symptom-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.symptom-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  margin-bottom: 11px;
+}
+
+/* Circular Bus Node Markers */
+.bus-node-marker {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.marker-red {
+  background: var(--alert-red);
+  box-shadow: 0 0 8px var(--alert-red);
+}
+
+.marker-yellow {
+  background: var(--alert-yellow);
+  box-shadow: 0 0 8px var(--alert-yellow);
+}
+
+.symptom-text {
+  font-family: var(--font-hud-square);
+  font-size: 0.98rem;
+  color: #ffffff;
+  line-height: 1.35;
+  letter-spacing: 0.3px;
+}
+
+.symptom-text.red-highlight {
+  font-size: 1.15rem;
+  color: #ffffff;
+}
+
+.symptom-text.red-highlight strong {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--alert-red);
+}
+
+.urgent-symptoms-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  position: relative;
+}
+
+/* Interactive Toast */
+.vitals-toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: rgba(2, 24, 44, 0.94);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow: 0 0 20px var(--hud-cyan-glow);
+  padding: 8px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.vitals-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 8px var(--hud-cyan-bright);
+}
+
+.toast-title {
+  display: block;
+  font-size: 0.78rem;
+  color: #7adcf5;
+  text-transform: uppercase;
+}
+
+.toast-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Keyframes */
+@keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+@keyframes pulseHazard {
+  0% { transform: scale(0.95); opacity: 0.75; }
+  100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 12px var(--alert-red)); }
+}
+
+/* Responsive Scaling */
+@media (max-width: 1366px) {
+  .alerts-stage {
+    grid-template-columns: 275px 48px 1fr;
+    gap: 12px;
+  }
+  .alert-card-title {
+    font-size: 0.72rem;
+  }
+  .col-title {
+    font-size: 1.45rem;
+  }
+  .symptom-text {
+    font-size: 0.9rem;
+  }
+}

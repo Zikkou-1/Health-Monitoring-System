@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA V.I.T.A.L. - Crew Authentication & Login</title>
+  
+  <!-- =======================================================================
+       GOOGLE FONTS (Sci-Fi Aerospace Typography)
+       - Chakra Petch: Futuristic squared HUD typography
+       - Orbitron: Iconic NASA display font
+       - Rajdhani: Clean aerospace interface font
+       - Share Tech Mono: Aerospace telemetry data
+       ======================================================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       [SECTION 1]: BACKGROUND & PROCEDURAL STARFIELD CANVAS
+       ======================================================================= -->
+  <div class="space-background" id="section-background">
+    <canvas id="starfield"></canvas>
+    <div class="space-vignette"></div>
+  </div>
+
+  <!-- =======================================================================
+       MAIN CONTAINER FOR LOGIN PROCESS
+       Multi-step workflow:
+       - Step 1: Profile Selection ("please select the corresponding profile")
+       - Step 2: Selected Profile Action ("swipe right to leave a note / swipe left to preceed to login")
+       - Step 3: Password Authentication ("Hello, Hiba. Please enter your password")
+       ======================================================================= -->
+  <main class="login-viewport" id="loginViewport">
+
+    <!-- =====================================================================
+         [STEP 1]: PROFILE SELECTION SCREEN (Exact Match with Image 1)
+         ===================================================================== -->
+    <section class="login-step step-active" id="step-1" data-step="1">
+      
+      <!-- Top Branding: V.I.T.A.L. (Left) & NASA Worm Logo (Right) -->
+      <header class="step1-header">
+        <div class="vital-brand-wrapper">
+          <h1 class="vital-title">V.I.T.A.L.</h1>
+          <div class="nasa-worm-logo">
+            <svg class="nasa-logo-svg" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+              <g stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- N -->
+                <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+                <!-- A -->
+                <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+                <!-- S -->
+                <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+                <!-- A -->
+                <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <p class="step1-instructions">please select the corresponding profile</p>
+      </header>
+
+      <!-- Horizontal Crew Profiles Deck (5 Members) -->
+      <div class="profiles-deck" id="profilesDeck">
+        
+        <!-- Member 1: Ouissal -->
+        <div class="crew-card" data-crew="ouissal" data-name="Ouissal" data-photo="Ouissal.png" tabindex="0">
+          <div class="avatar-reticle">
+            <svg class="reticle-svg" viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="74" />
+              <circle class="ring-glow" cx="80" cy="80" r="74" />
+              <circle class="ring-dashes" cx="80" cy="80" r="68" />
+              <circle class="ring-ticks" cx="80" cy="80" r="62" />
+            </svg>
+            <div class="avatar-disc">
+              <img src="Ouissal.png" alt="Ouissal" onerror="this.onerror=null; this.src='Ouissal.png'">
+            </div>
+          </div>
+          <span class="crew-label">Ouissal</span>
+        </div>
+
+        <!-- Member 2: Hibib -->
+        <div class="crew-card" data-crew="hibib" data-name="Hibib" data-photo="Hibib.png" tabindex="0">
+          <div class="avatar-reticle">
+            <svg class="reticle-svg" viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="74" />
+              <circle class="ring-glow" cx="80" cy="80" r="74" />
+              <circle class="ring-dashes" cx="80" cy="80" r="68" />
+              <circle class="ring-ticks" cx="80" cy="80" r="62" />
+            </svg>
+            <div class="avatar-disc">
+              <img src="Hibib.png" alt="Hibib" onerror="this.onerror=null; this.src='Hibib.png'">
+            </div>
+          </div>
+          <span class="crew-label">Hibib</span>
+        </div>
+
+        <!-- Member 3: Ishak. -->
+        <div class="crew-card" data-crew="ishak" data-name="Ishak." data-photo="Ishak.png" tabindex="0">
+          <div class="avatar-reticle">
+            <svg class="reticle-svg" viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="74" />
+              <circle class="ring-glow" cx="80" cy="80" r="74" />
+              <circle class="ring-dashes" cx="80" cy="80" r="68" />
+              <circle class="ring-ticks" cx="80" cy="80" r="62" />
+            </svg>
+            <div class="avatar-disc">
+              <img src="Ishak.png" alt="Ishak." onerror="this.onerror=null; this.src='Ishak.png'">
+            </div>
+          </div>
+          <span class="crew-label">Ishak.</span>
+        </div>
+
+        <!-- Member 4: Abdellah -->
+        <div class="crew-card" data-crew="abdellah" data-name="Abdellah" data-photo="Abdou.png" tabindex="0">
+          <div class="avatar-reticle">
+            <svg class="reticle-svg" viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="74" />
+              <circle class="ring-glow" cx="80" cy="80" r="74" />
+              <circle class="ring-dashes" cx="80" cy="80" r="68" />
+              <circle class="ring-ticks" cx="80" cy="80" r="62" />
+            </svg>
+            <div class="avatar-disc">
+              <img src="Abdou.png" alt="Abdellah" onerror="this.onerror=null; this.src='Abdou.png'">
+            </div>
+          </div>
+          <span class="crew-label">Abdellah</span>
+        </div>
+
+        <!-- Member 5: Hiba (Default Mission Specialist) -->
+        <div class="crew-card" data-crew="hiba" data-name="Hiba" data-photo="Health app (4).png" tabindex="0">
+          <div class="avatar-reticle">
+            <svg class="reticle-svg" viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="74" />
+              <circle class="ring-glow" cx="80" cy="80" r="74" />
+              <circle class="ring-dashes" cx="80" cy="80" r="68" />
+              <circle class="ring-ticks" cx="80" cy="80" r="62" />
+            </svg>
+            <div class="avatar-disc">
+              <img src="Health app (4).png" alt="Hiba" onerror="this.onerror=null; this.src='Health app (4).png'">
+            </div>
+          </div>
+          <span class="crew-label">Hiba</span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================================
+         [STEP 2]: SELECTED PROFILE ACTION SCREEN (Exact Match with Image 2)
+         ===================================================================== -->
+    <section class="login-step" id="step-2" data-step="2">
+      
+      <!-- Top Center: NASA Worm Logo -->
+      <header class="step2-header">
+        <div class="nasa-worm-logo centered">
+          <svg class="nasa-logo-svg large" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+            <g stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+              <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+              <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+              <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+            </g>
+          </svg>
+        </div>
+      </header>
+
+      <!-- Center Action Stage -->
+      <div class="step2-stage">
+        
+        <!-- Left Action: Swipe Right To Leave A Note -->
+        <div class="action-wing left-wing" id="actionLeaveNote" title="Click or swipe right to leave a note">
+          <div class="chevron-group left">
+            <span class="chevron c1">&lsaquo;</span>
+            <span class="chevron c2">&lsaquo;</span>
+          </div>
+          <span class="action-text">swipe right to leave a note</span>
+        </div>
+
+        <!-- Center: Selected Crew Member Profile -->
+        <div class="selected-crew-center">
+          <div class="avatar-reticle large-reticle">
+            <svg class="reticle-svg" viewBox="0 0 200 200">
+              <circle class="ring-track" cx="100" cy="100" r="94" />
+              <circle class="ring-glow" cx="100" cy="100" r="94" />
+              <circle class="ring-dashes reverse" cx="100" cy="100" r="88" />
+              <circle class="ring-ticks" cx="100" cy="100" r="80" />
+            </svg>
+            <div class="avatar-disc large-disc">
+              <img id="step2-avatar" src="Health app (4).png" alt="Selected Astronaut">
+            </div>
+          </div>
+          <h2 class="selected-crew-name" id="step2-name">Hiba</h2>
+        </div>
+
+        <!-- Right Action: Swipe Left To Preceed To Login -->
+        <div class="action-wing right-wing" id="actionProceedLogin" title="Click or swipe left to proceed to login">
+          <span class="action-text">swipe left to preceed to login</span>
+          <div class="chevron-group right">
+            <span class="chevron c1">&rsaquo;</span>
+            <span class="chevron c2">&rsaquo;</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Back Button (to switch profile) -->
+      <button class="back-pill-btn" id="btnBackToProfiles" title="Return to Profile Selection">
+        &larr; Switch Profile
+      </button>
+
+    </section>
+
+
+    <!-- =====================================================================
+         [STEP 3]: PASSWORD AUTHENTICATION SCREEN (Exact Match with Image 3)
+         ===================================================================== -->
+    <section class="login-step" id="step-3" data-step="3">
+      
+      <!-- Top Center: NASA Worm Logo -->
+      <header class="step3-header">
+        <div class="nasa-worm-logo centered">
+          <svg class="nasa-logo-svg large" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NASA Logo">
+            <g stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M 10 34 L 10 14 C 10 8, 16 6, 20 12 L 30 28 C 34 34, 40 32, 40 26 L 40 6" />
+              <path d="M 46 34 L 54 12 C 56 7, 64 7, 66 12 L 74 34" />
+              <path d="M 100 11 C 96 6, 82 6, 82 16 C 82 25, 102 21, 102 29 C 102 36, 90 36, 84 31" />
+              <path d="M 108 34 L 116 12 C 118 7, 126 7, 128 12 L 136 34" />
+            </g>
+          </svg>
+        </div>
+      </header>
+
+      <!-- Center Auth Form Stage -->
+      <div class="step3-stage">
+        
+        <!-- Left: Crew Avatar in Reticle -->
+        <div class="auth-avatar-col">
+          <div class="avatar-reticle large-reticle">
+            <svg class="reticle-svg" viewBox="0 0 200 200">
+              <circle class="ring-track" cx="100" cy="100" r="94" />
+              <circle class="ring-glow" cx="100" cy="100" r="94" />
+              <circle class="ring-dashes" cx="100" cy="100" r="88" />
+              <circle class="ring-ticks" cx="100" cy="100" r="80" />
+            </svg>
+            <div class="avatar-disc large-disc">
+              <img id="step3-avatar" src="Health app (4).png" alt="Astronaut">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Greeting & Password Input -->
+        <div class="auth-form-col">
+          
+          <div class="auth-greeting">
+            <h2 class="greeting-name" id="step3-greeting">Hello, Hiba.</h2>
+            <p class="greeting-prompt">Please enter your password</p>
+          </div>
+
+          <!-- Password Input Row -->
+          <form class="auth-input-group" id="loginForm" onsubmit="return false;">
+            
+            <div class="input-glow-box">
+              <input 
+                type="password" 
+                class="password-field" 
+                id="passwordInput" 
+                placeholder="&mdash;" 
+                autocomplete="current-password" 
+                aria-label="Enter your password"
+                autofocus
+              >
+            </div>
+
+            <!-- Padlock Action Button -->
+            <button type="submit" class="lock-btn" id="lockSubmitBtn" title="Authorize and Login">
+              <svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="3" ry="3" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </button>
+
+          </form>
+
+          <!-- Feedback Status Readout -->
+          <div class="auth-status-message" id="authStatusMsg">
+            <span class="status-indicator"></span>
+            <span class="status-text" id="statusText">Press Enter or click 🔒 to login</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Quick Back Button (to Step 2) -->
+      <button class="back-pill-btn" id="btnBackToStep2" title="Return to Previous Screen">
+        &larr; Back
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <!-- =======================================================================
+       [POPUP MODAL]: LEAVE A NOTE (Triggered by Swipe Right)
+       ======================================================================= -->
+  <div class="cyber-modal-overlay" id="noteModal" aria-hidden="true">
+    <div class="cyber-modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">CREW LOG // LEAVE A MISSION NOTE</h3>
+        <button class="modal-close-btn" id="btnCloseNoteModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-sub">Add an expedited operational note for <strong id="noteTargetName">Hiba</strong>:</p>
+        <textarea class="note-textarea" id="noteInput" rows="4" placeholder="Enter status note, medication log, or EVA checklist reminder..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-btn cancel" id="btnCancelNote">Cancel</button>
+        <button class="modal-btn save" id="btnSaveNote">Save to Mission Log</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Telemetry Toast -->
+  <div class="vitals-toast" id="vitals-toast" aria-hidden="true">
+    <span class="toast-indicator"></span>
+    <div class="toast-info">
+      <strong class="toast-title" id="toast-title">NASA V.I.T.A.L.</strong>
+      <span class="toast-val" id="toast-val">Status</span>
+    </div>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="index.js"></script>
+</body>
+</html>
